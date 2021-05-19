@@ -6,10 +6,9 @@ class App extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         body: Center(
-          child: Text('Home page'),
+          child: Text('Home'),
         ),
       ),
-      theme: ThemeData(accentColor: Colors.pinkAccent),
       debugShowCheckedModeBanner: false,
     );
   }
