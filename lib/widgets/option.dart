@@ -1,40 +1,42 @@
 import 'package:flutter/material.dart';
 
-class Option extends StatefulWidget {
-  const Option({Key key}) : super(key: key);
+class Option extends StatelessWidget {
+  final String text;
+  final int index;
+  final VoidCallback press;
 
-  @override
-  _OptionState createState() => _OptionState();
-}
-
-class _OptionState extends State<Option> {
-  List<bool> checked = [true, true, false, false, true];
+  const Option({Key key, this.text, this.index, this.press}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          for (var i = 0; i < 4; i++)
-            Row(
-              children: [
-                Checkbox(
-                  value: checked[i],
-                  onChanged: i == 4
-                      ? null
-                      : (bool value) {
-                          setState(() {
-                            checked[i] = value;
-                          });
-                        },
-                ),
-                Text(
-                  'Checkbox ${i+1}'
-                )
-              ],
-            )
-        ],
+    return InkWell(
+      onTap: press,
+      child: Container(
+        margin: EdgeInsets.only(top: 12, right: 5, left: 5),
+        padding: EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(15)
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text("${index + 1}. $text",
+            style: TextStyle(color: Colors.grey, fontSize: 16),
+            ),
+            Container(
+              height: 26,
+              width: 26,
+              decoration: BoxDecoration(
+                color: Colors.grey,
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(50)
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
+
