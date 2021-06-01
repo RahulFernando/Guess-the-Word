@@ -32,6 +32,12 @@ TextEditingController optionController2 = TextEditingController();
 TextEditingController optionController3 = TextEditingController();
 TextEditingController optionController4 = TextEditingController();
 
+bool option1 = false;
+bool option2 = false;
+bool option3 = false;
+bool option4 = false;
+
+
 bool isEditing = false;
 bool textFieldvisibility = false; 
 
@@ -44,7 +50,11 @@ getAllQuestions(){
 }
 
 addBook() async{
-    Question question = Question(question: questionController.text,option1: optionController1.text,option2: optionController2.text,option3: optionController3.text,option4: optionController4.text);
+
+    List<String> optionsList = [optionController1.text, optionController2.text, optionController3.text, optionController4.text];
+    List<bool> answerList = [option1,option2,option3,option4];
+
+    Question question = Question(question: questionController.text,options: optionsList,answerList: answerList);
 
     try{
 
@@ -123,33 +133,34 @@ Widget buildBody(BuildContext context){
               children: <Widget>[
                   Row(
                     children: <Widget>[
-                        Icon(Icons.question_answer,color:Colors.yellow),
+                        Icon(Icons.question_answer_rounded,color:Colors.orange),
                         Text(questionObj.question)
                     ]
                   ),
                   Divider(),
                     Row(
                     children: <Widget>[
-                        Icon(Icons.person,color:Colors.purple),
-                        Text(questionObj.option1)
+                        Icon(Icons.format_list_bulleted_rounded,color:Colors.purple),
+                        Text(questionObj.options[0]),
                     ]
                   ),
                    Row(
                     children: <Widget>[
-                        Icon(Icons.person,color:Colors.purple),
-                        Text(questionObj.option2)
+                        Icon(Icons.format_list_bulleted_rounded,color:Colors.purple),
+                        Text(questionObj.options[1])
+
                     ]
                   ),
                    Row(
                     children: <Widget>[
-                        Icon(Icons.person,color:Colors.purple),
-                        Text(questionObj.option3)
+                        Icon(Icons.format_list_bulleted_rounded,color:Colors.purple),
+                        Text(questionObj.options[2])
                     ]
                   ),
                    Row(
                     children: <Widget>[
-                        Icon(Icons.person,color:Colors.purple),
-                        Text(questionObj.option4)
+                        Icon(Icons.format_list_bulleted_rounded,color:Colors.purple),
+                        Text(questionObj.options[3])
                     ]
                   ),
               ],
@@ -172,10 +183,10 @@ Widget buildBody(BuildContext context){
 
 setUpdateUI(Question questionObj){
       questionController.text = questionObj.question;
-      optionController1.text = questionObj.option1;
-      optionController2.text = questionObj.option2;
-      optionController3.text = questionObj.option3;
-      optionController4.text = questionObj.option4;
+      optionController1.text = questionObj.options[0];
+      optionController2.text = questionObj.options[1];
+      optionController3.text = questionObj.options[2];
+      optionController4.text = questionObj.options[3];
 
       setState(() {
         textFieldvisibility = true;
@@ -262,14 +273,34 @@ setUpdateUI(Question questionObj){
                      labelText:"Option 1",
                      hintText:"Enter Option 1"
                    ),
+                   
                  ),
+                  CheckboxListTile(  
+                  title: Text("Answer is Option 1"), //    <-- label
+                  value: this.option1,   
+                  onChanged: (bool value) {  
+                    setState(() {  
+                        this.option1 = value;   
+                      });  
+                    },  
+                  ),  
                  TextFormField(
                    controller: optionController2,
                    decoration: InputDecoration(
                      labelText:"Option 2",
                      hintText:"Enter Option 2"
                    ),
+                   
                  ),
+                CheckboxListTile(  
+                  title: Text("Answer is Option 2"), //    <-- label
+                  value: this.option2,   
+                  onChanged: (bool value) {  
+                    setState(() {  
+                        this.option2 = value;   
+                      });  
+                    },  
+                  ),  
                  TextFormField(
                    controller: optionController3,
                    decoration: InputDecoration(
@@ -277,6 +308,15 @@ setUpdateUI(Question questionObj){
                      hintText:"Enter Option 3"
                    ),
                  ),
+                   CheckboxListTile(  
+                  title: Text("Answer is Option 3"), //    <-- label
+                  value: this.option3,   
+                  onChanged: (bool value) {  
+                    setState(() {  
+                        this.option3 = value;   
+                      });  
+                    },  
+                  ),  
                  TextFormField(
                    controller: optionController4,
                    decoration: InputDecoration(
@@ -284,8 +324,17 @@ setUpdateUI(Question questionObj){
                      hintText:"Enter Option 4"
                    ),
                  ),
-                   ],
-                 ),
+                   CheckboxListTile(  
+                  title: Text("Answer is Option 4"), //    <-- label
+                  value: this.option4,   
+                  onChanged: (bool value) {  
+                    setState(() {  
+                        this.option4 = value;   
+                      });  
+                    },  
+                  ),  
+                   ],),
+              
                 SizedBox(
                height: 10,
             ),
