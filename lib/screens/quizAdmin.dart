@@ -81,7 +81,7 @@ updateQuestion(Question questionObj,String question,List<String> optionsList,Lis
 
       FirebaseFirestore.instance.runTransaction((transaction) async {
 
-        await transaction.update(questionObj.id, {'question': questionController.text,'options': optionsList,'answerList': answerList});
+        await transaction.update(questionObj.id, {'question': question,'options': optionsList,'answerList': answerList});
       });
 
     }catch(e){
@@ -157,38 +157,42 @@ Widget buildBody(BuildContext context){
               children: <Widget>[
                   Row(
                     children: <Widget>[
-                        Icon(Icons.question_answer_rounded,color:Colors.orange),
+                        Icon(Icons.search_rounded,color:Colors.purple),
                         Text(questionObj.question),
                     ]
                   ),
                   Divider(),
                     Row(
                     children: <Widget>[
-                        Icon(Icons.format_list_bulleted_rounded,color:Colors.purple),
+                        Icon(Icons.question_answer_rounded,color:Colors.orange),
                         Text(questionObj.options[0]),
+                        if(questionObj.answerList[0]) Icon(Icons.check_circle_outline_rounded,color:Colors.green),
                        
                     ]
                   ),
                    Row(
                     children: <Widget>[
-                        Icon(Icons.format_list_bulleted_rounded,color:Colors.purple),
+                        Icon(Icons.question_answer_rounded,color:Colors.orange),
                         Text(questionObj.options[1]),
-                         Icon(Icons.format_list_bulleted_rounded,color:Colors.purple)
+                        if(questionObj.answerList[1]) Icon(Icons.check_circle_outline_rounded,color:Colors.green),
+                        
                         
 
                     ]
                   ),
                    Row(
                     children: <Widget>[
-                        Icon(Icons.format_list_bulleted_rounded,color:Colors.purple),
+                        Icon(Icons.question_answer_rounded,color:Colors.orange),
                         Text(questionObj.options[2]),
+                        if(questionObj.answerList[2]) Icon(Icons.check_circle_outline_rounded,color:Colors.green),
                         
                     ]
                   ),
                    Row(
                     children: <Widget>[
-                        Icon(Icons.format_list_bulleted_rounded,color:Colors.purple),
+                        Icon(Icons.question_answer_rounded,color:Colors.orange),
                         Text(questionObj.options[3]),
+                        if(questionObj.answerList[3]) Icon(Icons.check_circle_outline_rounded,color:Colors.green),
                         
                     ]
                   ),
@@ -235,14 +239,26 @@ setUpdateUI(Question questionObj){
         child: OutlineButton(
           child:Text(isEditing? "UPDATE" : "ADD"),
           onPressed: (){
+            
             if(isEditing == true){
               updateIfEditing();
             }else{
               addBook();
             }
-
             setState(() {
               textFieldvisibility = false;
+
+               questionController.text = "";
+               optionController1.text = "";
+               optionController2.text = "";
+               optionController3.text = "";
+               optionController4.text = "";
+
+               option1 = false;
+               option2 = false;
+               option3 = false;
+               option4 = false;
+
             });
           },
         ),
@@ -311,7 +327,7 @@ setUpdateUI(Question questionObj){
                    
                  ),
                   CheckboxListTile(  
-                  title: Text("Answer is Option 1"), //    <-- label
+                  title: Text("Option 1 is a Correct word"), //    <-- label
                   value: this.option1,   
                   onChanged: (bool value) {  
                     setState(() {  
@@ -329,7 +345,7 @@ setUpdateUI(Question questionObj){
                    
                  ),
                 CheckboxListTile(  
-                  title: Text("Answer is Option 2"), //    <-- label
+                  title: Text("Option 2 is a Correct word"), //    <-- label
                   value: this.option2,   
                   onChanged: (bool value) {  
                     setState(() {  
@@ -345,7 +361,7 @@ setUpdateUI(Question questionObj){
                    ),
                  ),
                    CheckboxListTile(  
-                  title: Text("Answer is Option 3"), //    <-- label
+                  title: Text("Option 3 is a Correct word"), //    <-- label
                   value: this.option3,   
                   onChanged: (bool value) {  
                     setState(() {  
@@ -362,7 +378,7 @@ setUpdateUI(Question questionObj){
                    ),
                  ),
                    CheckboxListTile(  
-                  title: Text("Answer is Option 4"), //    <-- label
+                  title: Text("Option 4 is a Correct word"), //    <-- label
                   value: this.option4,   
                   onChanged: (bool value) {  
                     setState(() {  
