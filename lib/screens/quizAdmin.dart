@@ -49,6 +49,10 @@ getAllQuestions(){
     return FirebaseFirestore.instance.collection(firestoreCollectionName).snapshots();
 }
 
+getNumberOfQuestions(){
+    
+}
+
 addBook() async{
 
     List<String> optionsList = [optionController1.text, optionController2.text, optionController3.text, optionController4.text];
@@ -72,13 +76,28 @@ addBook() async{
     }
   }
 
-updateQuestion(Question questionObj , String question , String answer){
-    
+updateQuestion(Question questionObj,String question,List<String> optionsList,List<bool> answerList){
+    try{
+
+      FirebaseFirestore.instance.runTransaction((transaction) async {
+
+        await transaction.update(questionObj.id, {'question': questionController.text,'options': optionsList,'answerList': answerList});
+      });
+
+    }catch(e){
+        print(e.toString());
+    }
   }
 
   updateIfEditing(){
 
+    
+    List<String> newOptionsList = [optionController1.text, optionController2.text, optionController3.text, optionController4.text];
+    List<bool> newAnswerList = [option1,option2,option3,option4];
+
     if(isEditing){
+
+        updateQuestion(currentQuestion,questionController.text,newOptionsList,newAnswerList);
 
       setState(() {
         isEditing = false;
@@ -88,6 +107,11 @@ updateQuestion(Question questionObj , String question , String answer){
 
   deleteQuestion(Question question){
 
+      FirebaseFirestore.instance.runTransaction(
+        (Transaction transaction) async{
+            await transaction.delete(question.id);
+
+        });
   }
 
 
@@ -116,7 +140,7 @@ Widget buildBody(BuildContext context){
 
    Widget listItemBuild(BuildContext context, DocumentSnapshot data) {
 
-    final questionObj = Question.fromJson(data.data());
+    final questionObj = Question.fromJson(data.data(),data.reference);
 
     return Padding(
       key: ValueKey(questionObj.question),
@@ -134,7 +158,7 @@ Widget buildBody(BuildContext context){
                   Row(
                     children: <Widget>[
                         Icon(Icons.question_answer_rounded,color:Colors.orange),
-                        Text(questionObj.question)
+                        Text(questionObj.question),
                     ]
                   ),
                   Divider(),
@@ -142,25 +166,30 @@ Widget buildBody(BuildContext context){
                     children: <Widget>[
                         Icon(Icons.format_list_bulleted_rounded,color:Colors.purple),
                         Text(questionObj.options[0]),
+                       
                     ]
                   ),
                    Row(
                     children: <Widget>[
                         Icon(Icons.format_list_bulleted_rounded,color:Colors.purple),
-                        Text(questionObj.options[1])
+                        Text(questionObj.options[1]),
+                         Icon(Icons.format_list_bulleted_rounded,color:Colors.purple)
+                        
 
                     ]
                   ),
                    Row(
                     children: <Widget>[
                         Icon(Icons.format_list_bulleted_rounded,color:Colors.purple),
-                        Text(questionObj.options[2])
+                        Text(questionObj.options[2]),
+                        
                     ]
                   ),
                    Row(
                     children: <Widget>[
                         Icon(Icons.format_list_bulleted_rounded,color:Colors.purple),
-                        Text(questionObj.options[3])
+                        Text(questionObj.options[3]),
+                        
                     ]
                   ),
               ],
@@ -187,6 +216,11 @@ setUpdateUI(Question questionObj){
       optionController2.text = questionObj.options[1];
       optionController3.text = questionObj.options[2];
       optionController4.text = questionObj.options[3];
+
+      option1 = questionObj.answerList[0];
+      option2 = questionObj.answerList[1];
+      option3 = questionObj.answerList[2];
+      option4 = questionObj.answerList[3];
 
       setState(() {
         textFieldvisibility = true;
@@ -267,6 +301,7 @@ setUpdateUI(Question questionObj){
                          hintText:"Enter Question"
                        ),
                      ),
+                     
                       TextFormField(
                    controller: optionController1,
                    decoration: InputDecoration(
@@ -283,7 +318,8 @@ setUpdateUI(Question questionObj){
                         this.option1 = value;   
                       });  
                     },  
-                  ),  
+                  ), 
+                 
                  TextFormField(
                    controller: optionController2,
                    decoration: InputDecoration(
@@ -316,7 +352,8 @@ setUpdateUI(Question questionObj){
                         this.option3 = value;   
                       });  
                     },  
-                  ),  
+                  ),
+                 
                  TextFormField(
                    controller: optionController4,
                    decoration: InputDecoration(
