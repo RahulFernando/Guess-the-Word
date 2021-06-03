@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:guess_app/screens/register.dart';
 import 'package:guess_app/utils/color.dart';
 import 'package:guess_app/widgets/btn_widget.dart';
 import 'package:guess_app/widgets/header_container.dart';
 
-class LoginScreen extends StatefulWidget {
+class RegisterScreen extends StatefulWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _RegisterScreenState createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,7 +16,7 @@ class _LoginScreenState extends State<LoginScreen> {
         padding: EdgeInsets.only(bottom: 30),
         child: Column(
           children: <Widget>[
-            HeaderContainer("Login"),
+            HeaderContainer("Register"),
             Expanded(
               flex: 1,
               child: Container(
@@ -25,35 +24,27 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
+                    _textInput(hint: "Full Name", icon: Icons.person),
                     _textInput(hint: "Email", icon: Icons.email),
+                    _textInput(hint: "Phone Number", icon: Icons.call),
                     _textInput(hint: "Password", icon: Icons.vpn_key),
-                    Container(
-                      margin: EdgeInsets.only(top: 10),
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        "Forgot Password?",
-                      ),
-                    ),
                     Expanded(
                       child: Center(
                         child: ButtonWidget(
-                          onClick: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => RegisterScreen()));
+                          btnText: "REGISTER",
+                          onClick: (){
+                            Navigator.pop(context);
                           },
-                          btnText: "LOGIN",
                         ),
                       ),
                     ),
                     RichText(
                       text: TextSpan(children: [
                         TextSpan(
-                            text: "Don't have an account ? ",
+                            text: "Already a member ? ",
                             style: TextStyle(color: Colors.black)),
                         TextSpan(
-                            text: "Register",
+                            text: "Login",
                             style: TextStyle(color: purpleColors)),
                       ]),
                     )
@@ -66,6 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+
 
   Widget _textInput({controller, hint, icon}) {
     return Container(
@@ -85,4 +77,5 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+
 }
