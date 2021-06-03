@@ -1,21 +1,8 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
-
 import '../models/question.dart';
+import '../controllers/question_controller.dart';
 
-
-class QuizAdminApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'test',
-      home: QuizAdminDemo(),
-    );
-  }
-}
 
 class QuizAdminDemo extends StatefulWidget {
    QuizAdminDemo() : super();
@@ -26,6 +13,9 @@ class QuizAdminDemo extends StatefulWidget {
 }
 
 class _QuizAdminDemoState extends State<QuizAdminDemo> {
+
+final controller = QuestionController();
+
 TextEditingController questionController = TextEditingController();
 TextEditingController optionController1 = TextEditingController();
 TextEditingController optionController2 = TextEditingController();
@@ -45,80 +35,86 @@ String firestoreCollectionName = "test";
 
 Question currentQuestion;
 
-getAllQuestions(){
-    return FirebaseFirestore.instance.collection(firestoreCollectionName).snapshots();
-}
 
-getNumberOfQuestions(){
-    
-}
-
-addBook() async{
+addBook(){
 
     List<String> optionsList = [optionController1.text, optionController2.text, optionController3.text, optionController4.text];
     List<bool> answerList = [option1,option2,option3,option4];
 
-    Question question = Question(question: questionController.text,options: optionsList,answerList: answerList);
+    Question questionObj = Question(question: questionController.text,options: optionsList,answerList: answerList);
 
-    try{
+    controller.addQuestion(questionObj);
 
-      FirebaseFirestore.instance.runTransaction(
-        (Transaction transaction) async{
-            await FirebaseFirestore.instance
-                            .collection(firestoreCollectionName)
-                            .doc()
-                            .set(question.toMap());
-
-        }
-      );
-    }catch(e){
-        print(e.toString());
-    }
-  }
-
-updateQuestion(Question questionObj,String question,List<String> optionsList,List<bool> answerList){
-    try{
-
-      FirebaseFirestore.instance.runTransaction((transaction) async {
-
-        await transaction.update(questionObj.id, {'question': question,'options': optionsList,'answerList': answerList});
-      });
-
-    }catch(e){
-        print(e.toString());
-    }
-  }
+}
 
   updateIfEditing(){
 
-    
     List<String> newOptionsList = [optionController1.text, optionController2.text, optionController3.text, optionController4.text];
     List<bool> newAnswerList = [option1,option2,option3,option4];
 
     if(isEditing){
-
-        updateQuestion(currentQuestion,questionController.text,newOptionsList,newAnswerList);
-
+       controller.updateQuestion(currentQuestion,questionController.text,newOptionsList,newAnswerList);
       setState(() {
         isEditing = false;
       });
     }
   }
 
-  deleteQuestion(Question question){
+setUpdateUI(Question questionObj){
+      questionController.text = questionObj.question;
+      optionController1.text = questionObj.options[0];
+      optionController2.text = questionObj.options[1];
+      optionController3.text = questionObj.options[2];
+      optionController4.text = questionObj.options[3];
 
-      FirebaseFirestore.instance.runTransaction(
-        (Transaction transaction) async{
-            await transaction.delete(question.id);
+      option1 = questionObj.answerList[0];
+      option2 = questionObj.answerList[1];
+      option3 = questionObj.answerList[2];
+      option4 = questionObj.answerList[3];
 
-        });
+      setState(() {
+        textFieldvisibility = true;
+        isEditing = true;
+        currentQuestion = questionObj;
+      });
+ }
+
+  button(){
+      return SizedBox(
+        width: double.infinity,
+        child: OutlineButton(
+          child:Text(isEditing? "UPDATE" : "ADD"),
+          onPressed: (){
+            if(isEditing == true){
+              updateIfEditing();
+            }else{
+              addBook();
+            }
+            setState(() {
+
+              textFieldvisibility = false;
+
+               questionController.text = "";
+               optionController1.text = "";
+               optionController2.text = "";
+               optionController3.text = "";
+               optionController4.text = "";
+
+               option1 = false;
+               option2 = false;
+               option3 = false;
+               option4 = false;
+
+            });
+          },
+        ),
+      );
   }
-
 
 Widget buildBody(BuildContext context){
 
     return StreamBuilder<QuerySnapshot>(
-      stream: getAllQuestions(),
+      stream: controller.getAllQuestions(),
       builder: (context,snapshot){
         if(snapshot.hasError){
           return Text('Error ${snapshot.error}');
@@ -132,21 +128,19 @@ Widget buildBody(BuildContext context){
   }
 
  Widget buildList(BuildContext context , List<DocumentSnapshot> snapshot){
-    
     return ListView(
       children:snapshot.map((data) => listItemBuild(context,data)).toList(),
     );
   }
 
-   Widget listItemBuild(BuildContext context, DocumentSnapshot data) {
+Widget listItemBuild(BuildContext context, DocumentSnapshot data) {
 
-    final questionObj = Question.fromJson(data.data(),data.reference);
+   final questionObj = Question.fromJson(data.data(),data.reference);
 
     return Padding(
       key: ValueKey(questionObj.question),
       padding: EdgeInsets.symmetric(vertical:19 , horizontal:1),
       child:Container(
-        
         decoration: BoxDecoration(
           border: Border.all(color: Colors.blue),
           borderRadius: BorderRadius.circular(4),
@@ -201,7 +195,7 @@ Widget buildBody(BuildContext context){
             trailing: IconButton(
               icon: Icon(Icons.delete, color:Colors.red),
               onPressed: (){
-                deleteQuestion(questionObj);
+                controller.deleteQuestion(questionObj);
               }),
 
               onTap: (){
@@ -212,61 +206,10 @@ Widget buildBody(BuildContext context){
       ),
     );
 
-  }
+}
 
-setUpdateUI(Question questionObj){
-      questionController.text = questionObj.question;
-      optionController1.text = questionObj.options[0];
-      optionController2.text = questionObj.options[1];
-      optionController3.text = questionObj.options[2];
-      optionController4.text = questionObj.options[3];
-
-      option1 = questionObj.answerList[0];
-      option2 = questionObj.answerList[1];
-      option3 = questionObj.answerList[2];
-      option4 = questionObj.answerList[3];
-
-      setState(() {
-        textFieldvisibility = true;
-        isEditing = true;
-        currentQuestion = questionObj;
-      });
-    }
-
-     button(){
-      return SizedBox(
-        width: double.infinity,
-        child: OutlineButton(
-          child:Text(isEditing? "UPDATE" : "ADD"),
-          onPressed: (){
-            
-            if(isEditing == true){
-              updateIfEditing();
-            }else{
-              addBook();
-            }
-            setState(() {
-              textFieldvisibility = false;
-
-               questionController.text = "";
-               optionController1.text = "";
-               optionController2.text = "";
-               optionController3.text = "";
-               optionController4.text = "";
-
-               option1 = false;
-               option2 = false;
-               option3 = false;
-               option4 = false;
-
-            });
-          },
-        ),
-      );
-    }
-
-  @override
-  Widget build(BuildContext context) {
+@override
+Widget build(BuildContext context) {
      return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
