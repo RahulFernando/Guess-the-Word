@@ -36,22 +36,24 @@ class _QuizBodyState extends State<QuizBody> {
             children: [
               Padding(
                 padding: const EdgeInsets.all(16),
-                child: Text.rich(
-                  TextSpan(
-                    text: "${Provider.of<QuestionProvider>(context).questionNumber}",
-                    style: Theme.of(context)
+                child: Obx(
+                    () => Text.rich(
+                    TextSpan(
+                      text: "${Provider.of<QuestionProvider>(context).questionNumber}",
+                      style: Theme.of(context)
+                                  .textTheme
+                                  .headline5
+                                  .copyWith(color: Colors.black54),
+                      children: [
+                        TextSpan(
+                            text: "/${questions.length}",
+                            style: Theme.of(context)
                                 .textTheme
-                                .headline5
-                                .copyWith(color: Colors.black54),
-                    children: [
-                      TextSpan(
-                          text: "/${questions.length}",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline6
-                              .copyWith(color: Colors.black54)),
-                    ]
-                  )
+                                .headline6
+                                .copyWith(color: Colors.black54)),
+                      ]
+                    )
+                  ),
                 ),
               ),
               SizedBox(
@@ -59,13 +61,14 @@ class _QuizBodyState extends State<QuizBody> {
               ),
               Expanded(
                 child: PageView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  onPageChanged: Provider.of<QuestionProvider>(context).upateQuesionNumber,
-                  itemCount: questions.length,
-                  itemBuilder: (context, index) => QuestionCard(
-                    question: questions[index]
-                  ),
-                ),
+                    physics: NeverScrollableScrollPhysics(),
+                    controller: Provider.of<QuestionProvider>(context).pageController,
+                    onPageChanged: Provider.of<QuestionProvider>(context).upateQuesionNumber,
+                    itemCount: questions.length,
+                    itemBuilder: (context, index) => QuestionCard(
+                        length: questions.length,
+                        question: questions[index]
+                    ),),
               ),
             ],
           ),

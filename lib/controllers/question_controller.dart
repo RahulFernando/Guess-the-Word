@@ -9,4 +9,11 @@ class QuestionController {
     return _db.collection('questions').snapshots().map((snapshot) =>
         snapshot.docs.map((doc) => Question.fromJson(doc.data())).toList());
   }
+
+  // get question by id
+  Future<Question> getQuestion(String id) {
+    return _db.collection('questions').document(id).get().then((value) {
+      return Question.fromJson(value.data());
+    });
+  }
 }
