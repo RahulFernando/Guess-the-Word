@@ -167,6 +167,7 @@ showValidationDialog(BuildContext context , String msg) {
 
   // set up the AlertDialog
   AlertDialog alert = AlertDialog(
+    backgroundColor: Colors.red.shade100,
     title: Text("Validation Alert"),
     content: Text(msg),
     actions: [
@@ -237,16 +238,19 @@ viewAddUpdateDialogBox(BuildContext context){
                   
                   return StatefulBuilder(builder: (context,setState){
                       return AlertDialog(
+                    title: Text(isEditing? "UPDATE QUESTION" : "ADD NEW QUESTION"),
+                    backgroundColor: Colors.purple.shade100,
                     content: Stack(
                       overflow: Overflow.visible,
                       children: <Widget>[
+
                         Positioned(
-                          right: -40.0,
-                          top: -40.0,
+                          right: -40,
+                          top: -80,
                           child: InkResponse(
                             onTap: () {
-                              Navigator.of(context).pop();
                               reinitializeState();
+                              Navigator.of(context).pop();  
                             },
                             child: CircleAvatar(
                               child: Icon(Icons.close),
@@ -538,6 +542,7 @@ Widget build(BuildContext context) {
           ),
           backgroundColor: Colors.purple,
       ),
+      drawer: Drawer(),
       body: Container(
         padding: EdgeInsets.all(19),
         child: Column(
