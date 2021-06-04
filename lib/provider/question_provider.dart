@@ -30,9 +30,7 @@ class QuestionProvider with ChangeNotifier {
   }
 
   // check answer
-  bool checkAnswer(Question question) {
-    print("Correct: $_correctAnswers");
-
+  void checkAnswer(Question question) {
     var tempList = new List();
     var noOfCorrectlyIdentified = 0;
 
@@ -42,26 +40,28 @@ class QuestionProvider with ChangeNotifier {
       }
     }
 
-    for (int j = 0; j < _selectedOptions.length; j++){
-      for (int k = 0; k < tempList.length; k++) {
-        if (tempList[k] == _selectedOptions[j]) {
-          noOfCorrectlyIdentified++;
+    if (_selectedOptions.length == tempList.length) {
+      for (int j = 0; j < _selectedOptions.length; j++) {
+        for (int k = 0; k < tempList.length; k++) {
+          if (tempList[k] == _selectedOptions[j]) {
+            noOfCorrectlyIdentified++;
+          }
         }
       }
     }
 
     if (noOfCorrectlyIdentified == tempList.length) {
       _correctAnswers++;
-     return true;
     }
 
-    return false;
+    _selectedOptions.clear();
   }
 
   // move to next question
   void nextQuestion() {
     if (_questionNumber.value != questions.length) {
-      _pageController.nextPage(duration: Duration(microseconds: 250), curve: Curves.ease);
+      _pageController.nextPage(
+          duration: Duration(microseconds: 250), curve: Curves.ease);
     }
   }
 }

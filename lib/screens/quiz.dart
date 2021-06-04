@@ -4,7 +4,7 @@ import 'package:guess_app/provider/question_provider.dart';
 import 'package:guess_app/widgets/quiz_body.dart';
 import 'package:provider/provider.dart';
 
-class QuizSreen extends StatelessWidget {
+class QuizScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {

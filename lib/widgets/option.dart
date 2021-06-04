@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:guess_app/provider/question_provider.dart';
-import 'package:guess_app/widgets/questionCard.dart';
 import 'package:provider/provider.dart';
 
 class Option extends StatefulWidget {
@@ -15,9 +14,8 @@ class Option extends StatefulWidget {
 class _OptionState extends State<Option> {
   bool isChecked = false;
 
- @override
+  @override
   Widget build(BuildContext context) {
-
     return InkWell(
       onTap: () {
         if (isChecked)
@@ -25,7 +23,8 @@ class _OptionState extends State<Option> {
             isChecked = false;
           });
         else {
-          Provider.of<QuestionProvider>(context, listen: false).lockAnswer(widget.index);
+          Provider.of<QuestionProvider>(context, listen: false)
+              .lockAnswer(widget.index);
           setState(() {
             isChecked = true;
           });
@@ -37,7 +36,8 @@ class _OptionState extends State<Option> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("${widget.index + 1}. ${widget.text}",
+            Text(
+              "${widget.index + 1}. ${widget.text}",
               style: TextStyle(color: Colors.grey, fontSize: 16),
             ),
             Container(
@@ -46,8 +46,7 @@ class _OptionState extends State<Option> {
               decoration: BoxDecoration(
                   color: Colors.white,
                   border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(5)
-              ),
+                  borderRadius: BorderRadius.circular(5)),
               child: Icon(getIcon()),
             ),
           ],
@@ -57,10 +56,6 @@ class _OptionState extends State<Option> {
   }
 
   IconData getIcon() {
-   if (isChecked)
-     return Icons.done;
+    if (isChecked) return Icons.done;
   }
 }
-
-
-

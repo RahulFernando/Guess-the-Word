@@ -8,7 +8,7 @@ import 'package:guess_app/provider/question_provider.dart';
 import 'package:guess_app/widgets/option.dart';
 import 'package:provider/provider.dart';
 
-import 'questionCard.dart';
+import 'question_card.dart';
 
 class QuizBody extends StatefulWidget {
   const QuizBody({Key key}) : super(key: key);
@@ -39,14 +39,18 @@ class _QuizBodyState extends State<QuizBody> {
                 child: Obx(
                     () => Text.rich(
                     TextSpan(
-                      text: "${Provider.of<QuestionProvider>(context).questionNumber}",
+                      text: Provider.of<QuestionProvider>(context).questionNumber == null
+                        ? ''
+                        : "${Provider.of<QuestionProvider>(context).questionNumber}",
                       style: Theme.of(context)
                                   .textTheme
                                   .headline5
                                   .copyWith(color: Colors.black54),
                       children: [
                         TextSpan(
-                            text: "/${questions.length}",
+                            text: questions != null
+                                ? "/${questions.length}"
+                                : '',
                             style: Theme.of(context)
                                 .textTheme
                                 .headline6
@@ -60,15 +64,17 @@ class _QuizBodyState extends State<QuizBody> {
                 height: 30.0,
               ),
               Expanded(
-                child: PageView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    controller: Provider.of<QuestionProvider>(context).pageController,
-                    onPageChanged: Provider.of<QuestionProvider>(context).upateQuesionNumber,
-                    itemCount: questions.length,
-                    itemBuilder: (context, index) => QuestionCard(
-                        length: questions.length,
-                        question: questions[index]
-                    ),),
+                child: questions != null 
+                  ? PageView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      controller: Provider.of<QuestionProvider>(context).pageController,
+                      onPageChanged: Provider.of<QuestionProvider>(context).upateQuesionNumber,
+                      itemCount: questions.length,
+                      itemBuilder: (context, index) => QuestionCard(
+                          length: questions.length,
+                          question: questions[index]
+                      ),)
+                  : Center(child: CircularProgressIndicator(),),
               ),
             ],
           ),

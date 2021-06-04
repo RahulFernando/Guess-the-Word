@@ -6,7 +6,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: QuizSreen(),
+        body: QuizScreen(),
       ),
       theme: ThemeData(
         primaryColor: Colors.purple
