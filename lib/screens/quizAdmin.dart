@@ -1,7 +1,11 @@
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
 import '../models/question.dart';
 import '../controllers/question_controller.dart';
+
 
 
 class QuizAdminDemo extends StatefulWidget {
@@ -11,6 +15,7 @@ class QuizAdminDemo extends StatefulWidget {
   @override
   _QuizAdminDemoState createState() => _QuizAdminDemoState();
 }
+
 
 class _QuizAdminDemoState extends State<QuizAdminDemo> {
 
@@ -45,9 +50,18 @@ addBook(){
 
     controller.addQuestion(questionObj);
 
+    Fluttertoast.showToast(  
+        msg: 'New Question has been added !',  
+        toastLength: Toast.LENGTH_SHORT,  
+        gravity: ToastGravity.BOTTOM,  
+        timeInSecForIos: 1,  
+        backgroundColor: Colors.white,  
+        textColor: Colors.green  
+    );  
+
 }
 
-  updateIfEditing(){
+updateIfEditing(){
 
     List<String> newOptionsList = [optionController1.text, optionController2.text, optionController3.text, optionController4.text];
     List<bool> newAnswerList = [option1,option2,option3,option4];
@@ -58,9 +72,19 @@ addBook(){
         isEditing = false;
       });
     }
+
+    Fluttertoast.showToast(  
+        msg: 'Selected Question has been updated !',  
+        toastLength: Toast.LENGTH_SHORT,  
+        gravity: ToastGravity.BOTTOM,  
+        timeInSecForIos: 1,  
+        backgroundColor: Colors.white,  
+        textColor: Colors.blue  
+    );  
   }
 
 setUpdateUI(Question questionObj){
+      viewDialogBox(context);
       questionController.text = questionObj.question;
       optionController1.text = questionObj.options[0];
       optionController2.text = questionObj.options[1];
@@ -79,7 +103,7 @@ setUpdateUI(Question questionObj){
       });
  }
 
-  button(){
+button(){
       return SizedBox(
         width: double.infinity,
         child: OutlineButton(
@@ -109,7 +133,182 @@ setUpdateUI(Question questionObj){
           },
         ),
       );
-  }
+}
+
+viewDialogBox(BuildContext context){
+  showDialog(
+                context: context,
+                builder: (context) {
+                  
+                  return StatefulBuilder(builder: (context,setState){
+                      return AlertDialog(
+                    content: Stack(
+                      overflow: Overflow.visible,
+                      children: <Widget>[
+                        Positioned(
+                          right: -40.0,
+                          top: -40.0,
+                          child: InkResponse(
+                            onTap: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: CircleAvatar(
+                              child: Icon(Icons.close),
+                              backgroundColor: Colors.red,
+                            ),
+                          ),
+                        ),
+                        Form(
+                          child:SingleChildScrollView(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: TextFormField(
+                                  controller: questionController,
+                                    decoration: InputDecoration(
+                                    labelText: "Question",
+                                    hintText:"Enter Question"
+                              ),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: TextFormField(
+                                  controller: optionController1,
+                                  decoration: InputDecoration(
+                                  labelText:"Option 1",
+                                  hintText:"Enter Option 1"
+                              ),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: CheckboxListTile(  
+                                title: Text("Option 1 is Correct!"), //    <-- label
+                                  value: this.option1,   
+                                 onChanged: (bool value) {  
+                               setState(() {  
+                                this.option1 = value;   
+                              });  
+                               },  
+                              ), 
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: TextFormField(
+                                  controller: optionController2,
+                                  decoration: InputDecoration(
+                                  labelText:"Option 2",
+                                  hintText:"Enter Option 2"
+                              ),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: CheckboxListTile(  
+                                title: Text("Option 2 is Correct!"), //    <-- label
+                                  value: this.option2,   
+                                 onChanged: (bool value) {  
+                               setState(() {  
+                                this.option2 = value;   
+                              });  
+                               },  
+                              ), 
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: TextFormField(
+                                  controller: optionController3,
+                                  decoration: InputDecoration(
+                                  labelText:"Option 3",
+                                  hintText:"Enter Option 2"
+                              ),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: CheckboxListTile(  
+                                title: Text("Option 3 is Correct!"), //    <-- label
+                                  value: this.option3,   
+                                 onChanged: (bool value) {  
+                               setState(() {  
+                                this.option3 = value;   
+                              });  
+                               },  
+                              ), 
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: TextFormField(
+                                  controller: optionController4,
+                                  decoration: InputDecoration(
+                                  labelText:"Option 4",
+                                  hintText:"Enter Option 4"
+                              ),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: CheckboxListTile(  
+                                title: Text("Option 4 is Correct!"), //    <-- label
+                                value: this.option4,   
+                                 onChanged: (bool value) {  
+                               setState(() {  
+                                this.option4 = value;   
+                              });  
+                               },  
+                              ), 
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: RaisedButton(
+                                   child:Text(isEditing? "UPDATE" : "ADD"),
+                                     onPressed: (){
+                                      if(isEditing == true){
+                                          updateIfEditing();
+                                           }else{
+                                            addBook();
+                                          }
+                                        Navigator.of(context).pop();
+                                        setState(() {
+
+                                          textFieldvisibility = false;
+
+                                          questionController.text = "";
+                                          optionController1.text = "";
+                                          optionController2.text = "";
+                                          optionController3.text = "";
+                                          optionController4.text = "";
+
+                                          option1 = false;
+                                          option2 = false;
+                                          option3 = false;
+                                          option4 = false;
+
+                                     });
+                                    },
+                                ),
+                                 
+                                  
+                                ),
+                              
+                            ],
+                          ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+
+                  });
+
+                  });}
+                 
+              
+      
+   
 
 Widget buildBody(BuildContext context){
 
@@ -126,8 +325,7 @@ Widget buildBody(BuildContext context){
       },
     );
   }
-
- Widget buildList(BuildContext context , List<DocumentSnapshot> snapshot){
+Widget buildList(BuildContext context , List<DocumentSnapshot> snapshot){
     return ListView(
       children:snapshot.map((data) => listItemBuild(context,data)).toList(),
     );
@@ -196,6 +394,14 @@ Widget listItemBuild(BuildContext context, DocumentSnapshot data) {
               icon: Icon(Icons.delete, color:Colors.red),
               onPressed: (){
                 controller.deleteQuestion(questionObj);
+                Fluttertoast.showToast(  
+                msg: 'Selected Question has been deleted !',  
+                toastLength: Toast.LENGTH_SHORT,  
+                gravity: ToastGravity.BOTTOM,  
+                timeInSecForIos: 1,  
+                backgroundColor: Colors.white,  
+                textColor: Colors.red  
+    );  
               }),
 
               onTap: (){
@@ -230,16 +436,6 @@ Widget build(BuildContext context) {
             ],
           ),
           backgroundColor: Colors.purple,
-          actions:<Widget>[
-          IconButton(
-            icon:Icon(Icons.add),
-            onPressed:(){
-              setState(() {
-                textFieldvisibility = !textFieldvisibility;
-              });
-            }
-          )
-        ],
       ),
       body: Container(
         padding: EdgeInsets.all(19),
@@ -247,96 +443,7 @@ Widget build(BuildContext context) {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
           children:<Widget> [
-            textFieldvisibility ? Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-               children:<Widget> [
-                 Column(
-                   children: [
-                     TextFormField(
-                       controller: questionController,
-                       decoration: InputDecoration(
-                         labelText: "Question",
-                         hintText:"Enter Question"
-                       ),
-                     ),
-                     
-                      TextFormField(
-                   controller: optionController1,
-                   decoration: InputDecoration(
-                     labelText:"Option 1",
-                     hintText:"Enter Option 1"
-                   ),
-                   
-                 ),
-                  CheckboxListTile(  
-                  title: Text("Option 1 is a Correct word"), //    <-- label
-                  value: this.option1,   
-                  onChanged: (bool value) {  
-                    setState(() {  
-                        this.option1 = value;   
-                      });  
-                    },  
-                  ), 
-                 
-                 TextFormField(
-                   controller: optionController2,
-                   decoration: InputDecoration(
-                     labelText:"Option 2",
-                     hintText:"Enter Option 2"
-                   ),
-                   
-                 ),
-                CheckboxListTile(  
-                  title: Text("Option 2 is a Correct word"), //    <-- label
-                  value: this.option2,   
-                  onChanged: (bool value) {  
-                    setState(() {  
-                        this.option2 = value;   
-                      });  
-                    },  
-                  ),  
-                 TextFormField(
-                   controller: optionController3,
-                   decoration: InputDecoration(
-                     labelText:"Option 3",
-                     hintText:"Enter Option 3"
-                   ),
-                 ),
-                   CheckboxListTile(  
-                  title: Text("Option 3 is a Correct word"), //    <-- label
-                  value: this.option3,   
-                  onChanged: (bool value) {  
-                    setState(() {  
-                        this.option3 = value;   
-                      });  
-                    },  
-                  ),
-                 
-                 TextFormField(
-                   controller: optionController4,
-                   decoration: InputDecoration(
-                     labelText:"Option 4",
-                     hintText:"Enter Option 4"
-                   ),
-                 ),
-                   CheckboxListTile(  
-                  title: Text("Option 4 is a Correct word"), //    <-- label
-                  value: this.option4,   
-                  onChanged: (bool value) {  
-                    setState(() {  
-                        this.option4 = value;   
-                      });  
-                    },  
-                  ),  
-                   ],),
-              
-                SizedBox(
-               height: 10,
-            ),
-            button()
-               ],
-            ):Container(),
+            Container(),
             SizedBox(
               height:20,
             ),
@@ -347,12 +454,15 @@ Widget build(BuildContext context) {
             SizedBox(
               height:20,
             ),
-            Flexible(child: buildBody(context),)
+            Flexible(child: buildBody(context))
           ],
         ),
-        
-
       ),
-    );
+      floatingActionButton: FloatingActionButton(
+          onPressed: () => {viewDialogBox(context)},
+          backgroundColor: Colors.purple,
+          child: Icon(Icons.add),
+        ),
+   );
   }
 }
