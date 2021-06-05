@@ -18,7 +18,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   checkAuthentification() async {
     _auth.authStateChanges().listen((user) async {
       if (user != null) {
-        Navigator.pushReplacementNamed(context, "/");
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => HomeScreen()));
       }
     });
   }
