@@ -51,14 +51,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     SizedBox(height: 100.0,),
                     Row(
                       children: <Widget>[
-                        SizedBox(width: 35.0,),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             primary: purpleColors, // background
                             onPrimary: Colors.white,
-                            fixedSize:  Size.fromHeight(50),
+                            padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(100.0) 
+                            borderRadius: BorderRadius.circular(100.0) 
                             ),// foreground
                           ),
                           onPressed: () {
@@ -72,12 +71,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                               style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                           ),
                         ),
-                        SizedBox(width: 30.0,),
+                        SizedBox(width: 8.0,),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             primary: purpleColors, // background
                             onPrimary: Colors.white,
-                            fixedSize: Size.fromHeight(50),
+                            padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(100.0) 
                             ),// foreground

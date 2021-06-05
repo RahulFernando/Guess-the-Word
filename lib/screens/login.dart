@@ -1,4 +1,7 @@
+import 'dart:ffi';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:guess_app/screens/home.dart';
 import 'package:guess_app/screens/register.dart';
 import 'package:guess_app/utils/color.dart';
 import 'package:guess_app/widgets/btn_widget.dart';
@@ -10,6 +13,57 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  String _email, _password;
+
+  CheckAuthentification() async {
+    _auth.onAuthStateChanged.listen((user) {
+      if (user != null) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      }
+    });
+
+    @override
+    Void initState() {
+      super.initState();
+      this.CheckAuthentification();
+    }
+  }
+
+  login() async {
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+
+      try {
+        UserCredential user = await _auth.signInWithEmailAndPassword(
+            email: _email, password: _password);
+      } catch (e) {
+        showError(e.errormessage);
+      }
+    }
+  }
+
+  showError(String errormessage) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('ERROR'),
+            content: Text(errormessage),
+            actions: <Widget>[
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK')),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,66 +76,67 @@ class _LoginScreenState extends State<LoginScreen> {
             Expanded(
               flex: 1,
               child: Container(
-                margin: EdgeInsets.only(left: 20, right: 20, top: 30),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    _textInput(hint: "Email", icon: Icons.email),
-                    _textInput(hint: "Password", icon: Icons.vpn_key),
-                    Container(
-                      margin: EdgeInsets.only(top: 10),
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        "Forgot Password?",
+                padding: EdgeInsets.all(20.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: <Widget>[
+                      SizedBox(
+                        height: 30.0,
                       ),
-                    ),
-                    Expanded(
-                      child: Center(
-                        child: ButtonWidget(
-                          onClick: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => RegisterScreen()));
+                      Container(
+                        child: TextFormField(
+                          // ignore: missing_return
+                          validator: (input) {
+                            if (input.isEmpty) return 'Enter Email';
                           },
-                          btnText: "LOGIN",
+                          decoration: InputDecoration(
+                              labelText: 'Email',
+                              prefixIcon: Icon(Icons.email)),
+                          onSaved: (input) => _email = input,
                         ),
                       ),
-                    ),
-                    RichText(
-                      text: TextSpan(children: [
-                        TextSpan(
-                            text: "Don't have an account ? ",
-                            style: TextStyle(color: Colors.black)),
-                        TextSpan(
-                            text: "Register",
-                            style: TextStyle(color: purpleColors)),
-                      ]),
-                    )
-                  ],
+                      Container(
+                        child: TextFormField(
+                          // ignore: missing_return
+                          validator: (input) {
+                            if (input.length < 6)
+                              return 'Provide Minimum 6 Character Password';
+                          },
+                          decoration: InputDecoration(
+                              labelText: 'Password',
+                              prefixIcon: Icon(Icons.lock)),
+                          obscureText: true,
+                          onSaved: (input) => _password = input,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 50.0,
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: purpleColors, // background
+                          onPrimary: Colors.white,
+                          padding: EdgeInsets.fromLTRB(100, 15, 100, 15),
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(100.0)), // foreground
+                        ),
+                        onPressed: () {},
+                        child: Text(
+                          'LOGIN',
+                          style: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             )
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _textInput({controller, hint, icon}) {
-    return Container(
-      margin: EdgeInsets.only(top: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(20)),
-        color: Colors.white,
-      ),
-      padding: EdgeInsets.only(left: 10),
-      child: TextFormField(
-        controller: controller,
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          hintText: hint,
-          prefixIcon: Icon(icon),
         ),
       ),
     );
