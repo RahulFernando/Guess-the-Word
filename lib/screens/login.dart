@@ -2,9 +2,7 @@ import 'dart:ffi';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:guess_app/screens/home.dart';
-import 'package:guess_app/screens/register.dart';
 import 'package:guess_app/utils/color.dart';
-import 'package:guess_app/widgets/btn_widget.dart';
 import 'package:guess_app/widgets/header_container.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -18,18 +16,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String _email, _password;
 
-  CheckAuthentification() async {
-    _auth.onAuthStateChanged.listen((user) {
+  checkAuthentification() async {
+    _auth.authStateChanges().listen((user) {
       if (user != null) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => HomeScreen()));
+        Navigator.pushReplacementNamed(context, "/");
       }
     });
 
     @override
     Void initState() {
       super.initState();
-      this.CheckAuthentification();
+      this.checkAuthentification();
     }
   }
 
@@ -41,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
         UserCredential user = await _auth.signInWithEmailAndPassword(
             email: _email, password: _password);
       } catch (e) {
-        showError(e.errormessage);
+        showError(e.message);
       }
     }
   }
@@ -122,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius:
                                   BorderRadius.circular(100.0)), // foreground
                         ),
-                        onPressed: () {},
+                        onPressed: login,
                         child: Text(
                           'LOGIN',
                           style: TextStyle(

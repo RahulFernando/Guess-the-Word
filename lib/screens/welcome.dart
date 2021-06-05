@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:guess_app/screens/login.dart';
 import 'package:guess_app/screens/register.dart';
 import 'package:guess_app/utils/color.dart';
-import 'package:guess_app/widgets/btn_widget.dart';
 import 'package:guess_app/widgets/header_container.dart';
 
 class WelcomeScreen extends StatefulWidget {
@@ -11,6 +10,13 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
+  navigateToLogin() async {
+    Navigator.pushReplacementNamed(context, "login");
+  }
+  navigateToRegister() async {
+    Navigator.pushReplacementNamed(context, "register");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,11 +50,17 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 10.0,),
-                    Text('Refresh your knowledge about the words',
-                    style: TextStyle(fontSize: 20.0, color: purpleLightColors),
+                    SizedBox(
+                      height: 10.0,
                     ),
-                    SizedBox(height: 100.0,),
+                    Text(
+                      'Refresh your knowledge about the words',
+                      style:
+                          TextStyle(fontSize: 20.0, color: purpleLightColors),
+                    ),
+                    SizedBox(
+                      height: 100.0,
+                    ),
                     Row(
                       children: <Widget>[
                         ElevatedButton(
@@ -57,39 +69,33 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                             onPrimary: Colors.white,
                             padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
                             shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(100.0) 
-                            ),// foreground
+                                borderRadius:
+                                    BorderRadius.circular(100.0)), // foreground
                           ),
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => LoginScreen()));
-                          },
+                          onPressed: navigateToLogin,
                           child: Text(
-                              'LOGIN',
-                              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                            'LOGIN',
+                            style: TextStyle(
+                                fontSize: 20.0, fontWeight: FontWeight.bold),
                           ),
                         ),
-                        SizedBox(width: 8.0,),
+                        SizedBox(
+                          width: 30.0,
+                        ),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             primary: purpleColors, // background
                             onPrimary: Colors.white,
                             padding: EdgeInsets.fromLTRB(40, 10, 40, 10),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(100.0) 
-                            ),// foreground
+                                borderRadius:
+                                    BorderRadius.circular(100.0)), // foreground
                           ),
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => RegisterScreen()));
-                          },
+                          onPressed: navigateToRegister,
                           child: Text(
-                              'REGISTER',
-                              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                            'REGISTER',
+                            style: TextStyle(
+                                fontSize: 20.0, fontWeight: FontWeight.bold),
                           ),
                         ),
                       ],
