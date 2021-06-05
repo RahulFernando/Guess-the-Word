@@ -1,30 +1,34 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Question {
-
+  
   final String question;
-  final List<bool> answers;
   final List<String> options;
+  final List<bool> answerList;
 
   DocumentReference id;
-
-  Question({this.id, this.question, this.answers, this.options});
   
-  factory Question.fromJson(Map<String, dynamic> json , DocumentReference docRef) {
+
+  Question({this.question, this.options, this.answerList,this.id});
+
+  factory Question.fromJson(Map<String, dynamic> json,DocumentReference docRef) {
+    print(json['question']);
     return Question(
-      id: docRef,
+      id:docRef,
       question: json['question'] as String,
-      answers: List<bool>.from(json['answers'].map((y) => y)),
       options: List<String>.from(json['options'].map((x) => x)),
+      answerList: List<bool>.from(json['answerList'].map((x) => x)),
+      
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      "id":id,
       "question": question,
-      "answers": answers,
-      "options": options
+      "options": options,
+      "answerList": answerList,
+      "id":id
+
     };
   }
 }
