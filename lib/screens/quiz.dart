@@ -20,7 +20,7 @@ class QuizScreen extends StatelessWidget {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset('img/Logo.png', fit: BoxFit.cover, height: 60.0,),
+              Image.asset('assets/img/Logo.png', fit: BoxFit.cover, height: 60.0,),
               Container(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
