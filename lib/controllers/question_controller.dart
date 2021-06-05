@@ -29,7 +29,9 @@ class QuestionController {
 //add question , options and correct answers
   addQuestion(Question questionObj) async {
     try {
+
       _db.runTransaction((Transaction transaction) async {
+
         await _db.collection('test').doc().set(questionObj.toMap());
       });
     } catch (e) {
