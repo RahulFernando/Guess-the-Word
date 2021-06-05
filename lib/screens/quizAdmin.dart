@@ -53,7 +53,7 @@ addQuestion(){
     List<String> optionsList = [optionController1.text, optionController2.text, optionController3.text, optionController4.text];
     List<bool> answerList = [option1,option2,option3,option4];
 
-    Question questionObj = Question(question: questionController.text,options: optionsList,answerList: answerList);
+    Question questionObj = Question(question: questionController.text,options: optionsList,answers: answerList);
 
     controller.addQuestion(questionObj);
 
@@ -104,10 +104,10 @@ setUpdateUI(Question questionObj){
       optionController3.text = questionObj.options[2];
       optionController4.text = questionObj.options[3];
 
-      option1 = questionObj.answerList[0];
-      option2 = questionObj.answerList[1];
-      option3 = questionObj.answerList[2];
-      option4 = questionObj.answerList[3];
+      option1 = questionObj.answers[0];
+      option2 = questionObj.answers[1];
+      option3 = questionObj.answers[2];
+      option4 = questionObj.answers[3];
 
       setState(() {
         isEditing = true;
@@ -466,7 +466,7 @@ Widget listItemBuild(BuildContext context, DocumentSnapshot data) {
                     children: <Widget>[
                         Icon(Icons.question_answer_rounded,color:Colors.orange),
                         Text(questionObj.options[0]),
-                        if(questionObj.answerList[0]) Icon(Icons.check_circle_outline_rounded,color:Colors.green),
+                        if(questionObj.answers[0]) Icon(Icons.check_circle_outline_rounded,color:Colors.green),
                        
                     ]
                   ),
@@ -474,7 +474,7 @@ Widget listItemBuild(BuildContext context, DocumentSnapshot data) {
                     children: <Widget>[
                         Icon(Icons.question_answer_rounded,color:Colors.orange),
                         Text(questionObj.options[1]),
-                        if(questionObj.answerList[1]) Icon(Icons.check_circle_outline_rounded,color:Colors.green),
+                        if(questionObj.answers[1]) Icon(Icons.check_circle_outline_rounded,color:Colors.green),
                       
                     ]
                   ),
@@ -482,7 +482,7 @@ Widget listItemBuild(BuildContext context, DocumentSnapshot data) {
                     children: <Widget>[
                         Icon(Icons.question_answer_rounded,color:Colors.orange),
                         Text(questionObj.options[2]),
-                        if(questionObj.answerList[2]) Icon(Icons.check_circle_outline_rounded,color:Colors.green),
+                        if(questionObj.answers[2]) Icon(Icons.check_circle_outline_rounded,color:Colors.green),
                         
                     ]
                   ),
@@ -490,7 +490,7 @@ Widget listItemBuild(BuildContext context, DocumentSnapshot data) {
                     children: <Widget>[
                         Icon(Icons.question_answer_rounded,color:Colors.orange),
                         Text(questionObj.options[3]),
-                        if(questionObj.answerList[3]) Icon(Icons.check_circle_outline_rounded,color:Colors.green),
+                        if(questionObj.answers[3]) Icon(Icons.check_circle_outline_rounded,color:Colors.green),
                         
                     ]
                   ),
@@ -527,7 +527,7 @@ Widget build(BuildContext context) {
          title: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset('img/Logo.png', fit: BoxFit.cover, height: 60.0,),
+              Image.asset('assets/img/Logo.png', fit: BoxFit.cover, height: 60.0,),
               Container(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(

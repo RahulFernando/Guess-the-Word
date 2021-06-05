@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:guess_app/screens/app.dart';
 import 'package:guess_app/screens/home.dart';
 import 'package:guess_app/screens/quiz.dart';
+import 'package:guess_app/screens/quizAdminApp.dart';
 import 'package:guess_app/screens/register.dart';
 import 'package:guess_app/utils/color.dart';
 import 'package:guess_app/widgets/btn_widget.dart';
@@ -126,7 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         onPressed: () {
                           Navigator.pushReplacement(context,
-                              MaterialPageRoute(builder: (_) => QuizScreen()));
+                              MaterialPageRoute(builder: (_) => QuizAdminApp()));
                         },
                         child: Text(
                           'LOGIN',

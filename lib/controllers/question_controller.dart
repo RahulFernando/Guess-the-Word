@@ -6,54 +6,57 @@ class QuestionController {
 
   // get all quesions
   Stream<List<Question>> getQuesions() {
-    return _db.collection('questions').snapshots().map((snapshot) =>
-        snapshot.docs.map((doc) => Question.fromJson(doc.data(),doc.reference)).toList());
+    return _db.collection('questions').snapshots().map((snapshot) => snapshot
+        .docs
+        .map((doc) => Question.fromJson(doc.data(), doc.reference))
+        .toList());
+  }
+
+    getAllQuestions(){
+    return _db.collection('test').snapshots();
   }
 
   // get question by id
   Future<Question> getQuestion(String id) {
     return _db.collection('questions').document(id).get().then((value) {
-      return Question.fromJson(value.data(),value.reference);
+      return Question.fromJson(value.data(), value.reference);
     });
-  getAllQuestions(){
-    return _db.collection('test').snapshots();
+    getAllQuestions() {
+      return _db.collection('test').snapshots();
+    }
   }
 
 //add question , options and correct answers
-  addQuestion(Question questionObj) async{
-
-    try{
-
-     _db.runTransaction(
-        (Transaction transaction) async{
-            await _db.collection('test').doc().set(questionObj.toMap());
-        }
-      );
-    }catch(e){
-        print(e.toString());
+  addQuestion(Question questionObj) async {
+    try {
+      _db.runTransaction((Transaction transaction) async {
+        await _db.collection('test').doc().set(questionObj.toMap());
+      });
+    } catch (e) {
+      print(e.toString());
     }
   }
 
 //update questions, options and correct answers.
-  updateQuestion(Question questionObj,String question,List<String> optionsList,List<bool> answerList){
-    try{
-
+  updateQuestion(Question questionObj, String question,
+      List<String> optionsList, List<bool> answerList) {
+    try {
       _db.runTransaction((transaction) async {
-        await transaction.update(questionObj.id, {'question': question,'options': optionsList,'answerList': answerList});
+        await transaction.update(questionObj.id, {
+          'question': question,
+          'options': optionsList,
+          'answerList': answerList
+        });
       });
-    }catch(e){
-        print(e.toString());
+    } catch (e) {
+      print(e.toString());
     }
   }
 
-
 //delete question
-  deleteQuestion(Question question){
-      _db.runTransaction(
-        (Transaction transaction) async{
-            await transaction.delete(question.id);
-
-        });
-  }  
-
+  deleteQuestion(Question question) {
+    _db.runTransaction((Transaction transaction) async {
+      await transaction.delete(question.id);
+    });
+  }
 }

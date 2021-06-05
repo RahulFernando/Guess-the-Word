@@ -4,12 +4,12 @@ class Question {
   
   final String question;
   final List<String> options;
-  final List<bool> answerList;
+  final List<bool> answers;
 
   DocumentReference id;
   
 
-  Question({this.question, this.options, this.answerList,this.id});
+  Question({this.question, this.options, this.answers,this.id});
 
   factory Question.fromJson(Map<String, dynamic> json,DocumentReference docRef) {
     print(json['question']);
@@ -17,7 +17,7 @@ class Question {
       id:docRef,
       question: json['question'] as String,
       options: List<String>.from(json['options'].map((x) => x)),
-      answerList: List<bool>.from(json['answerList'].map((x) => x)),
+      answers: List<bool>.from(json['answerList'].map((x) => x)),
       
     );
   }
@@ -26,7 +26,7 @@ class Question {
     return {
       "question": question,
       "options": options,
-      "answerList": answerList,
+      "answerList": answers,
       "id":id
 
     };
