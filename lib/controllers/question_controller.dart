@@ -13,7 +13,7 @@ class QuestionController {
   }
 
     getAllQuestions(){
-    return _db.collection('test').snapshots();
+    return _db.collection('questions').snapshots();
   }
 
   // get question by id
@@ -27,7 +27,7 @@ class QuestionController {
   addQuestion(Question questionObj) async {
     try {
       _db.runTransaction((Transaction transaction) async {
-        await _db.collection('test').doc().set(questionObj.toMap());
+        await _db.collection('questions').doc().set(questionObj.toMap());
       });
     } catch (e) {
       print(e.toString());
@@ -42,7 +42,7 @@ class QuestionController {
         await transaction.update(questionObj.id, {
           'question': question,
           'options': optionsList,
-          'answerList': answerList
+          'answers': answerList
         });
       });
     } catch (e) {

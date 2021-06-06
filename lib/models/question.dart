@@ -17,7 +17,7 @@ class Question {
       id:docRef,
       question: json['question'] as String,
       options: List<String>.from(json['options'].map((x) => x)),
-      answers: List<bool>.from(json['answerList'].map((x) => x)),
+      answers: List<bool>.from(json['answers'].map((x) => x)),
       
     );
   }
@@ -26,7 +26,7 @@ class Question {
     return {
       "question": question,
       "options": options,
-      "answerList": answers,
+      "answers": answers,
       "id":id
 
     };

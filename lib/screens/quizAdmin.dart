@@ -51,9 +51,9 @@ Question currentQuestion;
 addQuestion(){
 
     List<String> optionsList = [optionController1.text, optionController2.text, optionController3.text, optionController4.text];
-    List<bool> answerList = [option1,option2,option3,option4];
+    List<bool> answers = [option1,option2,option3,option4];
 
-    Question questionObj = Question(question: questionController.text,options: optionsList,answers: answerList);
+    Question questionObj = Question(question: questionController.text,options: optionsList,answers: answers);
 
     controller.addQuestion(questionObj);
 
@@ -204,7 +204,6 @@ showDeleteAlertDialogBox(BuildContext context, Question questionObj) {
     onPressed:  () {
        deleteQuestion(questionObj);
        Navigator.of(context).pop();
-                
     },
   );
 
@@ -373,8 +372,10 @@ viewAddUpdateDialogBox(BuildContext context){
                               Divider(color: Colors.purple,thickness: 5.0,),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: RaisedButton(
-                                   child:Text(isEditing? "UPDATE" : "ADD"),
+                                child: FlatButton(
+                                 child: Text(isEditing? "UPDATE" : 'ADD '),  
+                                 color: Colors.blueAccent, 
+                                 textColor: Colors.white,
                                      onPressed: (){
                                        if(questionController.text.isEmpty || optionController1.text.isEmpty || optionController2.text.isEmpty || optionController3.text.isEmpty || optionController4.text.isEmpty){
                                         showValidationDialog(context , "Every Text Field Has to be filled !");
@@ -443,9 +444,6 @@ Widget buildList(BuildContext context , List<DocumentSnapshot> snapshot){
       children:snapshot.map((data) => listItemBuild(context,data)).toList(),
     );
   }
-
-
-
 
 
 //Load Single Question Object a single item
