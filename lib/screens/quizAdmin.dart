@@ -215,6 +215,10 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
             return AlertDialog(
               title: Text(isEditing ? "UPDATE QUESTION" : "ADD NEW QUESTION"),
               backgroundColor: Colors.purple.shade100,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(45),
+                ),
+              elevation: 0,
               content: Stack(
                 overflow: Overflow.visible,
                 children: <Widget>[
@@ -246,6 +250,7 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
                                   hintText: "Enter Question"),
                             ),
                           ),
+                          Divider(color: Colors.purple,thickness: 5.0,),
                           Padding(
                             padding: EdgeInsets.all(8.0),
                             child: TextFormField(
@@ -267,6 +272,7 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
                               },
                             ),
                           ),
+                          Divider(color: Colors.purple,thickness: 5.0,),
                           Padding(
                             padding: EdgeInsets.all(8.0),
                             child: TextFormField(
@@ -288,13 +294,14 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
                               },
                             ),
                           ),
+                          Divider(color: Colors.purple,thickness: 5.0,),
                           Padding(
                             padding: EdgeInsets.all(8.0),
                             child: TextFormField(
                               controller: optionController3,
                               decoration: InputDecoration(
                                   labelText: "Option 3",
-                                  hintText: "Enter Option 2"),
+                                  hintText: "Enter Option 3"),
                             ),
                           ),
                           Padding(
@@ -309,6 +316,7 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
                               },
                             ),
                           ),
+                          Divider(color: Colors.purple,thickness: 5.0,),
                           Padding(
                             padding: EdgeInsets.all(8.0),
                             child: TextFormField(
@@ -330,10 +338,13 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
                               },
                             ),
                           ),
+                          Divider(color: Colors.purple,thickness: 5.0,),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: RaisedButton(
-                              child: Text(isEditing ? "UPDATE" : "ADD"),
+                            child: FlatButton(
+                                 child: Text(isEditing? "UPDATE" : 'ADD '),  
+                                 color: Colors.purpleAccent, 
+                                 textColor: Colors.white,
                               onPressed: () {
                                 if (questionController.text.isEmpty ||
                                     optionController1.text.isEmpty ||
@@ -341,13 +352,13 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
                                     optionController3.text.isEmpty ||
                                     optionController4.text.isEmpty) {
                                   showValidationDialog(context,
-                                      "Every Text Field Has to be filled !");
+                                      "Every text field has to be filled !");
                                 } else if (option1 == false &&
                                     option2 == false &&
                                     option3 == false &&
                                     option4 == false) {
                                   showValidationDialog(context,
-                                      "Atleast one correct answer has to be selected");
+                                      "Atleast one correct answer has to be selected !");
                                 } else {
                                   if (isEditing == true) {
                                     updateQuestion();
