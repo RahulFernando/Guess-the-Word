@@ -20,10 +20,7 @@ class QuestionController {
   Future<Question> getQuestion(String id) {
     return _db.collection('questions').document(id).get().then((value) {
       return Question.fromJson(value.data(), value.reference);
-    });
-    getAllQuestions() {
-      return _db.collection('test').snapshots();
-    }
+    });  
   }
 
 //add question , options and correct answers

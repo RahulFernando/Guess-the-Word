@@ -239,7 +239,12 @@ viewAddUpdateDialogBox(BuildContext context){
                   return StatefulBuilder(builder: (context,setState){
                       return AlertDialog(
                     title: Text(isEditing? "UPDATE QUESTION" : "ADD NEW QUESTION"),
+                    
                     backgroundColor: Colors.purple.shade100,
+                    shape: RoundedRectangleBorder(
+                           borderRadius: BorderRadius.circular(45),
+                      ),
+                    elevation: 0,
                     content: Stack(
                       overflow: Overflow.visible,
                       children: <Widget>[
@@ -273,6 +278,7 @@ viewAddUpdateDialogBox(BuildContext context){
                               ),
                                 ),
                               ),
+                              Divider(color: Colors.purple,thickness: 5.0,),
                               Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: TextFormField(
@@ -295,6 +301,7 @@ viewAddUpdateDialogBox(BuildContext context){
                                },  
                               ), 
                               ),
+                              Divider(color: Colors.purple,thickness: 5.0,),
                               Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: TextFormField(
@@ -317,13 +324,14 @@ viewAddUpdateDialogBox(BuildContext context){
                                },  
                               ), 
                               ),
+                              Divider(color: Colors.purple,thickness: 5.0,),
                               Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: TextFormField(
                                   controller: optionController3,
                                   decoration: InputDecoration(
                                   labelText:"Option 3",
-                                  hintText:"Enter Option 2"
+                                  hintText:"Enter Option 3"
                               ),
                                 ),
                               ),
@@ -339,6 +347,7 @@ viewAddUpdateDialogBox(BuildContext context){
                                },  
                               ), 
                               ),
+                              Divider(color: Colors.purple,thickness: 5.0,),
                               Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: TextFormField(
@@ -361,6 +370,7 @@ viewAddUpdateDialogBox(BuildContext context){
                                },  
                               ), 
                               ),
+                              Divider(color: Colors.purple,thickness: 5.0,),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: RaisedButton(
