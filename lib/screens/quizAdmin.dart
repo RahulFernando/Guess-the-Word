@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -6,228 +5,205 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../models/question.dart';
 import '../controllers/question_controller.dart';
 
-
-
 class QuizAdminDemo extends StatefulWidget {
-   QuizAdminDemo() : super();
+  QuizAdminDemo() : super();
 
   final String appTitle = "Quiz DB";
+
   @override
   _QuizAdminDemoState createState() => _QuizAdminDemoState();
 }
 
 class _QuizAdminDemoState extends State<QuizAdminDemo> {
+  final controller = QuestionController();
 
-final controller = QuestionController();
-
-//Initialize Text Fields 
-TextEditingController questionController = TextEditingController();
-TextEditingController optionController1 = TextEditingController();
-TextEditingController optionController2 = TextEditingController();
-TextEditingController optionController3 = TextEditingController();
-TextEditingController optionController4 = TextEditingController();
-
-
+//Initialize Text Fields
+  TextEditingController questionController = TextEditingController();
+  TextEditingController optionController1 = TextEditingController();
+  TextEditingController optionController2 = TextEditingController();
+  TextEditingController optionController3 = TextEditingController();
+  TextEditingController optionController4 = TextEditingController();
 
 //Intialize the Check Box boolean values
-bool option1 = false;
-bool option2 = false;
-bool option3 = false;
-bool option4 = false;
-
-
+  bool option1 = false;
+  bool option2 = false;
+  bool option3 = false;
+  bool option4 = false;
 
 //initialze the Update indication boolean variable
-bool isEditing = false;
-
-
+  bool isEditing = false;
 
 //initialize the current qustion object
-Question currentQuestion;
-
-
+  Question currentQuestion;
 
 //Call the add question method in the controller
-addQuestion(){
-
-    List<String> optionsList = [optionController1.text, optionController2.text, optionController3.text, optionController4.text];
-    List<bool> answers = [option1,option2,option3,option4];
-
-    Question questionObj = Question(question: questionController.text,options: optionsList,answers: answers);
+  addQuestion() {
+    List<String> optionsList = [
+      optionController1.text,
+      optionController2.text,
+      optionController3.text,
+      optionController4.text
+    ];
+    List<bool> answerList = [option1, option2, option3, option4];
+    var createdDateTime = new DateTime.now();
+    Question questionObj = Question(
+        question: questionController.text,
+        options: optionsList,
+        answers: answerList,
+        createdDateTime: createdDateTime);
 
     controller.addQuestion(questionObj);
 
-    Fluttertoast.showToast(  
-        msg: 'New Question has been added !',  
-        toastLength: Toast.LENGTH_SHORT,  
-        gravity: ToastGravity.BOTTOM,  
-        timeInSecForIos: 1,  
-        backgroundColor: Colors.white,  
-        textColor: Colors.green  
-    );  
-
-}
-
-
+    Fluttertoast.showToast(
+        msg: 'New Question has been added !',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.white,
+        textColor: Colors.green);
+  }
 
 //Call the Update Question in the method in the controller
-updateQuestion(){
+  updateQuestion() {
+    List<String> newOptionsList = [
+      optionController1.text,
+      optionController2.text,
+      optionController3.text,
+      optionController4.text
+    ];
+    List<bool> newAnswerList = [option1, option2, option3, option4];
 
-    List<String> newOptionsList = [optionController1.text, optionController2.text, optionController3.text, optionController4.text];
-    List<bool> newAnswerList = [option1,option2,option3,option4];
-
-    if(isEditing){
-       controller.updateQuestion(currentQuestion,questionController.text,newOptionsList,newAnswerList);
+    if (isEditing) {
+      controller.updateQuestion(currentQuestion, questionController.text,
+          newOptionsList, newAnswerList);
       setState(() {
         isEditing = false;
       });
     }
 
-    Fluttertoast.showToast(  
-        msg: 'Selected Question has been updated !',  
-        toastLength: Toast.LENGTH_SHORT,  
-        gravity: ToastGravity.BOTTOM,  
-        timeInSecForIos: 1,  
-        backgroundColor: Colors.white,  
-        textColor: Colors.blue  
-    );  
-}
-
-
+    Fluttertoast.showToast(
+        msg: 'Selected Question has been updated !',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.white,
+        textColor: Colors.blue);
+  }
 
 //load the Update View UI
-setUpdateUI(Question questionObj){
-      viewAddUpdateDialogBox(context);
-      questionController.text = questionObj.question;
-      optionController1.text = questionObj.options[0];
-      optionController2.text = questionObj.options[1];
-      optionController3.text = questionObj.options[2];
-      optionController4.text = questionObj.options[3];
+  setUpdateUI(Question questionObj) {
+    viewAddUpdateDialogBox(context);
+    questionController.text = questionObj.question;
+    optionController1.text = questionObj.options[0];
+    optionController2.text = questionObj.options[1];
+    optionController3.text = questionObj.options[2];
+    optionController4.text = questionObj.options[3];
 
-      option1 = questionObj.answers[0];
-      option2 = questionObj.answers[1];
-      option3 = questionObj.answers[2];
-      option4 = questionObj.answers[3];
+    option1 = questionObj.answers[0];
+    option2 = questionObj.answers[1];
+    option3 = questionObj.answers[2];
+    option4 = questionObj.answers[3];
 
-      setState(() {
-        isEditing = true;
-        currentQuestion = questionObj;
-      });
-}
+    setState(() {
+      isEditing = true;
+      currentQuestion = questionObj;
+    });
+  }
 
-
-
- //call the Delete method in controller
-deleteQuestion(Question questionObj){
-   controller.deleteQuestion(questionObj);
-   Fluttertoast.showToast(  
-                msg: 'Selected Question has been deleted !',  
-                toastLength: Toast.LENGTH_SHORT,  
-                gravity: ToastGravity.BOTTOM,  
-                timeInSecForIos: 1,  
-                backgroundColor: Colors.white,  
-                textColor: Colors.red  
-    );  
-}
-
+  //call the Delete method in controller
+  deleteQuestion(Question questionObj) {
+    controller.deleteQuestion(questionObj);
+    Fluttertoast.showToast(
+        msg: 'Selected Question has been deleted !',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.white,
+        textColor: Colors.red);
+  }
 
 //Reinitilaze the State
 
-reinitializeState(){
-  setState(() {
-    isEditing = false;
+  reinitializeState() {
+    setState(() {
+      isEditing = false;
 
-    questionController.text = "";
-    optionController1.text = "";
-    optionController2.text = "";
-    optionController3.text = "";
-    optionController4.text = "";
+      questionController.text = "";
+      optionController1.text = "";
+      optionController2.text = "";
+      optionController3.text = "";
+      optionController4.text = "";
 
-    option1 = false;
-    option2 = false;
-    option3 = false;
-    option4 = false;
-
-  });
-}
-
-
-
+      option1 = false;
+      option2 = false;
+      option3 = false;
+      option4 = false;
+    });
+  }
 
 //Load the Form validations as Pop-ups
-showValidationDialog(BuildContext context , String msg) {
+  showValidationDialog(BuildContext context, String msg) {
+    // set up the button
+    Widget okButton = FlatButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
 
-  // set up the button
-  Widget okButton = FlatButton(
-    child: Text("OK"),
-    onPressed: () {
-      Navigator.of(context).pop();
-     },
-  );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      backgroundColor: Colors.red.shade100,
+      title: Text("Validation Alert"),
+      content: Text(msg),
+      actions: [
+        okButton,
+      ],
+    );
 
-  // set up the AlertDialog
-  AlertDialog alert = AlertDialog(
-    backgroundColor: Colors.red.shade100,
-    title: Text("Validation Alert"),
-    content: Text(msg),
-    actions: [
-      okButton,
-    ],
-  );
-
-  // show the dialog
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return alert;
-    },
-  );
-}
-
-
-
-
-
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 
 //Load Delete Confirmation Dialog box
-showDeleteAlertDialogBox(BuildContext context, Question questionObj) {
+  showDeleteAlertDialogBox(BuildContext context, Question questionObj) {
+    // set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text("Cancel"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+    Widget continueButton = FlatButton(
+      child: Text("Continue"),
+      onPressed: () {
+        deleteQuestion(questionObj);
+        Navigator.of(context).pop();
+      },
+    );
 
-  // set up the buttons
-  Widget cancelButton = FlatButton(
-    child: Text("Cancel"),
-    onPressed:  () {
-      Navigator.of(context).pop();
-    },
-  );
-  Widget continueButton = FlatButton(
-    child: Text("Continue"),
-    onPressed:  () {
-       deleteQuestion(questionObj);
-       Navigator.of(context).pop();
-    },
-  );
-
-  // set up the AlertDialog
-  AlertDialog alert = AlertDialog(
-    title: Text("Delete Confirmation "),
-    content: Text("Do you want to delete this Question?"),
-    actions: [
-      cancelButton,
-      continueButton,
-    ],
-  );
-  // show the dialog
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return alert;
-    },
-  );
-}
-
-
-
-
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Delete Confirmation "),
+      content: Text("Do you want to delete this Question?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 
 // Load the Add and Update Forms as a dialog box
 viewAddUpdateDialogBox(BuildContext context){
@@ -401,60 +377,115 @@ viewAddUpdateDialogBox(BuildContext context){
                               
                             ],
                           ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: RaisedButton(
+                              child: Text(isEditing ? "UPDATE" : "ADD"),
+                              onPressed: () {
+                                if (questionController.text.isEmpty ||
+                                    optionController1.text.isEmpty ||
+                                    optionController2.text.isEmpty ||
+                                    optionController3.text.isEmpty ||
+                                    optionController4.text.isEmpty) {
+                                  showValidationDialog(context,
+                                      "Every Text Field Has to be filled !");
+                                } else if (option1 == false &&
+                                    option2 == false &&
+                                    option3 == false &&
+                                    option4 == false) {
+                                  showValidationDialog(context,
+                                      "Atleast one correct answer has to be selected");
+                                } else {
+                                  if (isEditing == true) {
+                                    updateQuestion();
+                                  } else {
+                                    addQuestion();
+                                  }
+                                  Navigator.of(context).pop();
+                                  reinitializeState();
+                                }
+                              },
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  );
+                  ),
+                ],
+              ),
+            );
+          });
+        });
+  }
 
-             });
-
-           });}
-                 
-
-
-
-
-
-    
-//Load all the questions to the build body as a widget 
-Widget buildBody(BuildContext context){
+//Load all the questions to the build body as a widget
+  Widget buildBody(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       stream: controller.getAllQuestions(),
-      builder: (context,snapshot){
-        if(snapshot.hasError){
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
           return Text('Error ${snapshot.error}');
         }
-        if(snapshot.hasData){
+        if (snapshot.hasData) {
           print("Document -> ${snapshot.data.docs.length}");
-          return buildList(context,snapshot.data.docs);
+          return buildList(
+              context, sortListByCreatedDateTimeDesc(snapshot.data.docs));
         }
       },
     );
   }
 
-
-
-
-
+  /**
+   *  Sort FireStore Collection Documents By Created Date DESC
+   */
+  List<QueryDocumentSnapshot> sortListByCreatedDateTimeDesc(
+      List<QueryDocumentSnapshot> queryDocumentSnapshotList) {
+    queryDocumentSnapshotList.sort((a, b) {
+      //Null Value Check
+      Timestamp timeStampA = a.data().keys.contains("createdDateTime")
+          ? a.data()["createdDateTime"]
+          : null;
+      Timestamp timeStampB = b.data().keys.contains("createdDateTime")
+          ? b.data()["createdDateTime"]
+          : null;
+      if (timeStampA == null) {
+        return 1;
+      } else if (timeStampB == null) {
+        return -1;
+      } else if (timeStampA == null && timeStampB == null) {
+        return 0;
+      }
+      int result = timeStampA.compareTo(timeStampB);
+      if (result == 1) {
+        return -1;
+      } else if (result == -1) {
+        return 1;
+      }
+      return result;
+    });
+    return queryDocumentSnapshotList;
+  }
 
 //Load list and convert to a list view
-Widget buildList(BuildContext context , List<DocumentSnapshot> snapshot){
+  Widget buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
+    int _currentQuestionNumber = 0;
     return ListView(
-      children:snapshot.map((data) => listItemBuild(context,data)).toList(),
+      children: snapshot
+          .map((data) => listItemBuild(context, data, ++_currentQuestionNumber))
+          .toList(),
     );
   }
 
-
 //Load Single Question Object a single item
-Widget listItemBuild(BuildContext context, DocumentSnapshot data) {
-
-   final questionObj = Question.fromJson(data.data(),data.reference);
-
+  Widget listItemBuild(
+      BuildContext context, DocumentSnapshot data, int questionNumber) {
+    final questionObj = Question.fromJson(data.data(), data.reference);
+    final String _formattedQuestionText =
+        "( " + questionNumber.toString() + " ) " + questionObj.question;
     return Padding(
       key: ValueKey(questionObj.question),
-      padding: EdgeInsets.symmetric(vertical:19 , horizontal:1),
-      child:Container(
+      padding: EdgeInsets.symmetric(vertical: 19, horizontal: 1),
+      child: Container(
         decoration: BoxDecoration(
           border: Border.all(color: Colors.blue),
           borderRadius: BorderRadius.circular(4),
@@ -463,92 +494,79 @@ Widget listItemBuild(BuildContext context, DocumentSnapshot data) {
           child: ListTile(
             title: Column(
               children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                        Icon(Icons.help_center_rounded,color:Colors.purple),
-                        Text(questionObj.question),
-                    ]
-                  ),
-                  Divider(),
-                    Row(
-                    children: <Widget>[
-                        Icon(Icons.question_answer_rounded,color:Colors.orange),
-                        Text(questionObj.options[0]),
-                        if(questionObj.answers[0]) Icon(Icons.check_circle_outline_rounded,color:Colors.green),
-                       
-                    ]
-                  ),
-                   Row(
-                    children: <Widget>[
-                        Icon(Icons.question_answer_rounded,color:Colors.orange),
-                        Text(questionObj.options[1]),
-                        if(questionObj.answers[1]) Icon(Icons.check_circle_outline_rounded,color:Colors.green),
-                      
-                    ]
-                  ),
-                   Row(
-                    children: <Widget>[
-                        Icon(Icons.question_answer_rounded,color:Colors.orange),
-                        Text(questionObj.options[2]),
-                        if(questionObj.answers[2]) Icon(Icons.check_circle_outline_rounded,color:Colors.green),
-                        
-                    ]
-                  ),
-                   Row(
-                    children: <Widget>[
-                        Icon(Icons.question_answer_rounded,color:Colors.orange),
-                        Text(questionObj.options[3]),
-                        if(questionObj.answers[3]) Icon(Icons.check_circle_outline_rounded,color:Colors.green),
-                        
-                    ]
-                  ),
+                Row(children: <Widget>[
+                  Icon(Icons.help_center_rounded, color: Colors.purple),
+                  Flexible(child: Text(_formattedQuestionText)),
+                ]),
+                Divider(),
+                Row(children: <Widget>[
+                  Icon(Icons.question_answer_rounded, color: Colors.orange),
+                  Flexible(child: Text(questionObj.options[0])),
+                  if (questionObj.answers[0])
+                    Icon(Icons.check_circle_outline_rounded,
+                        color: Colors.green),
+                ]),
+                Row(children: <Widget>[
+                  Icon(Icons.question_answer_rounded, color: Colors.orange),
+                  Flexible(child: Text(questionObj.options[1])),
+                  if (questionObj.answers[1])
+                    Icon(Icons.check_circle_outline_rounded,
+                        color: Colors.green),
+                ]),
+                Row(children: <Widget>[
+                  Icon(Icons.question_answer_rounded, color: Colors.orange),
+                  Flexible(child: Text(questionObj.options[2])),
+                  if (questionObj.answers[2])
+                    Icon(Icons.check_circle_outline_rounded,
+                        color: Colors.green),
+                ]),
+                Row(children: <Widget>[
+                  Icon(Icons.question_answer_rounded, color: Colors.orange),
+                  Flexible(child: Text(questionObj.options[3])),
+                  if (questionObj.answers[3])
+                    Icon(Icons.check_circle_outline_rounded,
+                        color: Colors.green),
+                ]),
               ],
             ),
             trailing: IconButton(
-              icon: Icon(Icons.delete, color:Colors.red),
-              onPressed: (){
-                showDeleteAlertDialogBox(context,questionObj);
-               
-              }),
-
-              onTap: (){
-                setUpdateUI(questionObj);
-              },
+                icon: Icon(Icons.delete, color: Colors.red),
+                onPressed: () {
+                  showDeleteAlertDialogBox(context, questionObj);
+                }),
+            onTap: () {
+              setUpdateUI(questionObj);
+            },
           ),
         ),
       ),
     );
+  }
 
-}
-
-
-
-
-
-
-//Build Widget 
-@override
-Widget build(BuildContext context) {
-     return Scaffold(
+//Build Widget
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-         title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset('assets/img/Logo.png', fit: BoxFit.cover, height: 60.0,),
-              Container(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  'Guess The Word',
-                  style: TextStyle(
-                    fontFamily: 'Righteous',
-                    fontSize: 20.0
-                  ),
-                ),
-              )
-            ],
-          ),
-          backgroundColor: Colors.purple,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/img/Logo.png',
+              fit: BoxFit.cover,
+              height: 60.0,
+            ),
+            Container(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Guess The Word',
+                style: TextStyle(fontFamily: 'Righteous', fontSize: 20.0),
+              ),
+            )
+          ],
+        ),
+        backgroundColor: Colors.purple,
       ),
       drawer: Drawer(),
       body: Container(
@@ -556,27 +574,27 @@ Widget build(BuildContext context) {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
-          children:<Widget> [
+          children: <Widget>[
             Container(),
             SizedBox(
-              height:20,
+              height: 20,
             ),
-            Text("QUIZ LIST",style: TextStyle(
-              fontSize:18,
-              fontWeight:FontWeight.w800
-            ),),
+            Text(
+              "QUIZ LIST",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+            ),
             SizedBox(
-              height:20,
+              height: 20,
             ),
             Flexible(child: buildBody(context))
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-          onPressed: () => {viewAddUpdateDialogBox(context)},
-          backgroundColor: Colors.purple,
-          child: Icon(Icons.add),
-        ),
-   );
+        onPressed: () => {viewAddUpdateDialogBox(context)},
+        backgroundColor: Colors.purple,
+        child: Icon(Icons.add),
+      ),
+    );
   }
 }
