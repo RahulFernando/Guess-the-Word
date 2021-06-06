@@ -8,6 +8,7 @@ import 'package:guess_app/screens/quizAdmin.dart';
 import 'package:guess_app/screens/register.dart';
 import 'package:guess_app/screens/splash.dart';
 import 'package:guess_app/screens/welcome.dart';
+import './screens/quizAdminWelcomeSplash.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         "quiz": (BuildContext context) => QuizScreen(),
         "home": (BuildContext context) => HomeScreen(),
         "admin": (BuildContext context) => QuizAdminDemo(),
+        "adminWelcome":(BuildContext context) => QuizAdminWelcomeSplashScreen(),
       },
     );
   }

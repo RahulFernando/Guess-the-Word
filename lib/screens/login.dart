@@ -39,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
             UserCredential user = await _auth.signInWithEmailAndPassword(
                 email: _email, password: _password);
                 if (user.user.email == 'admin@gmail.com'){
-                  Navigator.pushReplacementNamed(context, 'admin');
+                  Navigator.pushReplacementNamed(context, 'adminWelcome');
                 }else {
                    Navigator.pushReplacementNamed(context, 'home');
                 }

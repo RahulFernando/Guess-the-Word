@@ -343,7 +343,7 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
                             padding: const EdgeInsets.all(8.0),
                             child: FlatButton(
                                  child: Text(isEditing? "UPDATE" : 'ADD '),  
-                                 color: Colors.purpleAccent, 
+                                 color: Colors.purple, 
                                  textColor: Colors.white,
                               onPressed: () {
                                 if (questionController.text.isEmpty ||
