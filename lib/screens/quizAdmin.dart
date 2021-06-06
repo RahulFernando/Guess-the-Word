@@ -176,14 +176,14 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
     Widget cancelButton = FlatButton(
       child: Text("Cancel"),
       onPressed: () {
-        Navigator.of(context).pop();
+        Navigator.of(context,rootNavigator: true).pop();
       },
     );
     Widget continueButton = FlatButton(
       child: Text("Continue"),
       onPressed: () {
         deleteQuestion(questionObj);
-        Navigator.of(context).pop();
+        Navigator.of(context,rootNavigator: true).pop();
       },
     );
 
@@ -432,8 +432,8 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
   Widget listItemBuild(
       BuildContext context, DocumentSnapshot data, int questionNumber) {
     final questionObj = Question.fromJson(data.data(), data.reference);
-    final String _formattedQuestionText =
-        "( " + questionNumber.toString() + " ) " + questionObj.question;
+    final String formattedQuestionNumberText = " "+questionNumber.toString() + " ";
+
     return Padding(
       key: ValueKey(questionObj.question),
       padding: EdgeInsets.symmetric(vertical: 19, horizontal: 1),
@@ -446,9 +446,21 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
           child: ListTile(
             title: Column(
               children: <Widget>[
-                Row(children: <Widget>[
-                  Icon(Icons.help_center_rounded, color: Colors.purple),
-                  Flexible(child: Text(_formattedQuestionText)),
+                Row(
+
+                    children: <Widget>[
+                      Container(
+             child: Text(formattedQuestionNumberText,style: TextStyle(color: Colors.white)),
+                        decoration: BoxDecoration (
+                            borderRadius: BorderRadius.all( Radius.circular(5)),
+                            color: Colors.purple
+                        ),
+                        padding: EdgeInsets.all(3.0),
+                        margin: const EdgeInsets.only(right: 5.0),
+          ),
+                      Flexible(child: Text(questionObj.question)),
+
+
                 ]),
                 Divider(),
                 Row(children: <Widget>[
@@ -531,9 +543,12 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
             SizedBox(
               height: 20,
             ),
-            Text(
-              "QUIZ LIST",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+            Wrap(crossAxisAlignment: WrapCrossAlignment.center,
+                children:[Icon(Icons.help_center_rounded, color: Colors.purple),
+                  Text(
+                    " QUIZ LIST",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+                  )]
             ),
             SizedBox(
               height: 20,
