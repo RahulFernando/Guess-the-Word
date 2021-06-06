@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guess_app/controllers/question_controller.dart';
 import 'package:guess_app/provider/question_provider.dart';
+import 'package:guess_app/widgets/main_drawer.dart';
 import 'package:guess_app/widgets/quiz_body.dart';
 import 'package:provider/provider.dart';
 
@@ -34,7 +35,7 @@ class QuizScreen extends StatelessWidget {
             ],
           ),
         ),
-        drawer: Drawer(),
+        drawer: MainDrawer(),
         body: QuizBody(),
       ),
     );

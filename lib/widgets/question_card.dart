@@ -64,10 +64,7 @@ class QuestionCard extends StatelessWidget {
                           context: context,
                           builder: (BuildContext context) {
                             Future.delayed(Duration(seconds: 3), () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => QuizScreen()));
+                             Navigator.pushReplacementNamed(context, "home");
                             });
                             return AlertDialog(
                               title: Text("Your Score"),
@@ -77,7 +74,7 @@ class QuestionCard extends StatelessWidget {
                     }
                   },
                   child: Text(
-                    "check",
+                    "Next",
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
@@ -88,12 +85,5 @@ class QuestionCard extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-IconData getIcon(List<int> selected, int index) {
-  if (selected.contains(index)) {
-    print(selected);
-    return Icons.done;
   }
 }

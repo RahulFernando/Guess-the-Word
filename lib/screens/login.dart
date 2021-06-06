@@ -2,6 +2,8 @@ import 'dart:ffi';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:guess_app/screens/home.dart';
+import 'package:guess_app/screens/quiz.dart';
+import 'package:guess_app/screens/quizAdminApp.dart';
 import 'package:guess_app/utils/color.dart';
 import 'package:guess_app/widgets/header_container.dart';
 
@@ -35,11 +37,19 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
 
-      try {
-        UserCredential user = await _auth.signInWithEmailAndPassword(
-            email: _email, password: _password);
-      } catch (e) {
-        showError(e.message);
+      switch (_email) {
+        case 'admin@gmail.com':
+          Navigator.pushReplacementNamed(context, 'admin');
+          break;
+        default:
+          try {
+            UserCredential user = await _auth.signInWithEmailAndPassword(
+                email: _email, password: _password);
+          } catch (e) {
+            showError(e.message);
+          }
+          Navigator.pushReplacementNamed(context, 'home');
+          break;
       }
     }
   }
