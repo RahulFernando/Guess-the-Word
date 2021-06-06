@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import '../models/question.dart';
 import '../controllers/question_controller.dart';
+import '../models/question.dart';
 
 class QuizAdminDemo extends StatefulWidget {
   QuizAdminDemo() : super();
@@ -16,6 +16,15 @@ class QuizAdminDemo extends StatefulWidget {
 
 class _QuizAdminDemoState extends State<QuizAdminDemo> {
   final controller = QuestionController();
+
+  //Functions as the controller for search field
+  TextEditingController _searchController = TextEditingController();
+
+  //Stores the complete questions list
+  List<QueryDocumentSnapshot> _resultsList = [];
+
+  //Stores the filtered questions based on the search criteria
+  List<QueryDocumentSnapshot> _searchResultsList = [];
 
 //Initialize Text Fields
   TextEditingController questionController = TextEditingController();
@@ -36,7 +45,36 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
 //initialize the current qustion object
   Question currentQuestion;
 
-//Call the add question method in the controller
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(_onSearchChanged);
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  /// Initilalize the necessary state changes needed after performing a search operation
+  _onSearchChanged() {
+    List<QueryDocumentSnapshot> filteredResultsList = [];
+    _resultsList.forEach((element) {
+      if (element.data().keys.contains("question")) {
+        String questionTitle = element.data()["question"];
+        if (questionTitle.contains(_searchController.text)) {
+          filteredResultsList.add(element);
+        }
+      }
+    });
+    setState(() {
+      _searchResultsList = filteredResultsList;
+    });
+  }
+
+  //Call the add question method in the controller
   addQuestion() {
     List<String> optionsList = [
       optionController1.text,
@@ -123,7 +161,6 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
   }
 
 //Reinitilaze the State
-
   reinitializeState() {
     setState(() {
       isEditing = false;
@@ -176,14 +213,14 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
     Widget cancelButton = FlatButton(
       child: Text("Cancel"),
       onPressed: () {
-        Navigator.of(context,rootNavigator: true).pop();
+        Navigator.of(context, rootNavigator: true).pop();
       },
     );
     Widget continueButton = FlatButton(
       child: Text("Continue"),
       onPressed: () {
         deleteQuestion(questionObj);
-        Navigator.of(context,rootNavigator: true).pop();
+        Navigator.of(context, rootNavigator: true).pop();
       },
     );
 
@@ -380,16 +417,20 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
         }
         if (snapshot.hasData) {
           print("Document -> ${snapshot.data.docs.length}");
-          return buildList(
-              context, sortListByCreatedDateTimeDesc(snapshot.data.docs));
+          _resultsList = snapshot.data.docs;
+          //Renders the question list based on the search criteria
+          if (_searchController.text.isEmpty) {
+            return buildList(
+                context, sortListByCreatedDateTimeDesc(_resultsList));
+          } else {
+            return buildList(context, _searchResultsList);
+          }
         }
       },
     );
   }
 
-  /**
-   *  Sort FireStore Collection Documents By Created Date DESC
-   */
+  ///  Sort FireStore Collection Documents By Created Date DESC
   List<QueryDocumentSnapshot> sortListByCreatedDateTimeDesc(
       List<QueryDocumentSnapshot> queryDocumentSnapshotList) {
     queryDocumentSnapshotList.sort((a, b) {
@@ -421,10 +462,36 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
 //Load list and convert to a list view
   Widget buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
     int _currentQuestionNumber = 0;
+
+    List<Widget> _renderList = [];
+
+    _renderList.add(TextField(
+      controller: _searchController,
+
+      decoration: InputDecoration(
+          prefixIcon: IconButton(
+            color: Colors.black,
+            icon: Icon(Icons.search),
+            iconSize: 20.0,
+
+          ),
+          suffixIcon:IconButton(
+              color: Colors.black,
+              icon: Icon(Icons.clear),
+              iconSize: 20.0,
+              onPressed: ()=> _searchController.clear()
+
+          ),
+          contentPadding: EdgeInsets.only(left: 25.0),
+          hintText: 'Search by question',
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(4.0))),
+    ));
+    snapshot.forEach((data) {
+      _renderList.add(listItemBuild(context, data, ++_currentQuestionNumber));
+    });
+
     return ListView(
-      children: snapshot
-          .map((data) => listItemBuild(context, data, ++_currentQuestionNumber))
-          .toList(),
+      children: _renderList,
     );
   }
 
@@ -432,7 +499,8 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
   Widget listItemBuild(
       BuildContext context, DocumentSnapshot data, int questionNumber) {
     final questionObj = Question.fromJson(data.data(), data.reference);
-    final String formattedQuestionNumberText = " "+questionNumber.toString() + " ";
+    final String formattedQuestionNumberText =
+        " " + questionNumber.toString() + " ";
 
     return Padding(
       key: ValueKey(questionObj.question),
@@ -441,51 +509,60 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
         decoration: BoxDecoration(
           border: Border.all(color: Colors.blue),
           borderRadius: BorderRadius.circular(4),
+
         ),
         child: SingleChildScrollView(
           child: ListTile(
             title: Column(
               children: <Widget>[
-                Row(
-
-                    children: <Widget>[
-                      Container(
-             child: Text(formattedQuestionNumberText,style: TextStyle(color: Colors.white)),
-                        decoration: BoxDecoration (
-                            borderRadius: BorderRadius.all( Radius.circular(5)),
-                            color: Colors.purple
-                        ),
-                        padding: EdgeInsets.all(3.0),
-                        margin: const EdgeInsets.only(right: 5.0),
-          ),
-                      Flexible(child: Text(questionObj.question)),
-
-
+                Row(children: <Widget>[
+                  Container(
+                    child: Text(formattedQuestionNumberText,
+                        style: TextStyle(color: Colors.white)),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                        color: Colors.purple),
+                    padding: EdgeInsets.all(3.0),
+                    margin: const EdgeInsets.only(right: 5.0),
+                  ),
+                  Flexible(child: Text(questionObj.question)),
                 ]),
                 Divider(),
                 Row(children: <Widget>[
-                  Icon(Icons.question_answer_rounded, color: Colors.orange),
+                Container(
+                 child: Icon(Icons.question_answer_rounded, color: Colors.orange),
+                  margin: const EdgeInsets.only(right: 3.0),
+      ),
                   Flexible(child: Text(questionObj.options[0])),
                   if (questionObj.answers[0])
                     Icon(Icons.check_circle_outline_rounded,
                         color: Colors.green),
                 ]),
                 Row(children: <Widget>[
-                  Icon(Icons.question_answer_rounded, color: Colors.orange),
+                  Container(
+                    child: Icon(Icons.question_answer_rounded, color: Colors.orange),
+                    margin: const EdgeInsets.only(right: 3.0),
+                  ),
                   Flexible(child: Text(questionObj.options[1])),
                   if (questionObj.answers[1])
                     Icon(Icons.check_circle_outline_rounded,
                         color: Colors.green),
                 ]),
                 Row(children: <Widget>[
-                  Icon(Icons.question_answer_rounded, color: Colors.orange),
+                  Container(
+                    child: Icon(Icons.question_answer_rounded, color: Colors.orange),
+                    margin: const EdgeInsets.only(right: 3.0),
+                  ),
                   Flexible(child: Text(questionObj.options[2])),
                   if (questionObj.answers[2])
                     Icon(Icons.check_circle_outline_rounded,
                         color: Colors.green),
                 ]),
                 Row(children: <Widget>[
-                  Icon(Icons.question_answer_rounded, color: Colors.orange),
+                  Container(
+                    child: Icon(Icons.question_answer_rounded, color: Colors.orange),
+                    margin: const EdgeInsets.only(right: 3.0),
+                  ),
                   Flexible(child: Text(questionObj.options[3])),
                   if (questionObj.answers[3])
                     Icon(Icons.check_circle_outline_rounded,
@@ -514,7 +591,7 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Image.asset(
               'assets/img/Logo.png',
@@ -543,13 +620,13 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
             SizedBox(
               height: 20,
             ),
-            Wrap(crossAxisAlignment: WrapCrossAlignment.center,
-                children:[Icon(Icons.help_center_rounded, color: Colors.purple),
-                  Text(
-                    " QUIZ LIST",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
-                  )]
-            ),
+            Wrap(crossAxisAlignment: WrapCrossAlignment.center, children: [
+              Icon(Icons.help_center_rounded, color: Colors.purple,size: 30),
+              Text(
+                " QUIZ LIST",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+              )
+            ]),
             SizedBox(
               height: 20,
             ),
