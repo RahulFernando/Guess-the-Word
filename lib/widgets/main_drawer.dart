@@ -35,12 +35,14 @@ class MainDrawer extends StatelessWidget {
                     ),
                   ),
                   _auth.currentUser != null
-                  ? Text(
-                    _auth.currentUser.email,
-                    style: TextStyle(
-                        color: white, fontSize: 18, fontFamily: 'Righteous'),
-                  )
-                  : Text(''),
+                      ? Text(
+                          _auth.currentUser.email,
+                          style: TextStyle(
+                              color: white,
+                              fontSize: 18,
+                              fontFamily: 'Righteous'),
+                        )
+                      : Text(''),
                 ],
               ),
             ),

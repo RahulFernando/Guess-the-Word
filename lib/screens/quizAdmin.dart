@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:guess_app/widgets/main_drawer.dart';
 
 import '../models/question.dart';
 import '../controllers/question_controller.dart';
@@ -176,14 +177,14 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
     Widget cancelButton = FlatButton(
       child: Text("Cancel"),
       onPressed: () {
-        Navigator.of(context).pop();
+        Navigator.of(context,rootNavigator: true).pop();
       },
     );
     Widget continueButton = FlatButton(
       child: Text("Continue"),
       onPressed: () {
         deleteQuestion(questionObj);
-        Navigator.of(context).pop();
+        Navigator.of(context,rootNavigator: true).pop();
       },
     );
 
@@ -206,176 +207,128 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
   }
 
 // Load the Add and Update Forms as a dialog box
-viewAddUpdateDialogBox(BuildContext context){
-  showDialog(
-                context: context,
-                builder: (context) {
-                  
-                  return StatefulBuilder(builder: (context,setState){
-                      return AlertDialog(
-                    title: Text(isEditing? "UPDATE QUESTION" : "ADD NEW QUESTION"),
-                    
-                    backgroundColor: Colors.purple.shade100,
-                    shape: RoundedRectangleBorder(
-                           borderRadius: BorderRadius.circular(45),
+  viewAddUpdateDialogBox(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+              title: Text(isEditing ? "UPDATE QUESTION" : "ADD NEW QUESTION"),
+              backgroundColor: Colors.purple.shade100,
+              content: Stack(
+                overflow: Overflow.visible,
+                children: <Widget>[
+                  Positioned(
+                    right: -40,
+                    top: -80,
+                    child: InkResponse(
+                      onTap: () {
+                        reinitializeState();
+                        Navigator.of(context).pop();
+                      },
+                      child: CircleAvatar(
+                        child: Icon(Icons.close),
+                        backgroundColor: Colors.red,
                       ),
-                    elevation: 0,
-                    content: Stack(
-                      overflow: Overflow.visible,
-                      children: <Widget>[
-
-                        Positioned(
-                          right: -40,
-                          top: -80,
-                          child: InkResponse(
-                            onTap: () {
-                              reinitializeState();
-                              Navigator.of(context).pop();  
-                            },
-                            child: CircleAvatar(
-                              child: Icon(Icons.close),
-                              backgroundColor: Colors.red,
+                    ),
+                  ),
+                  Form(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: TextFormField(
+                              controller: questionController,
+                              decoration: InputDecoration(
+                                  labelText: "Question",
+                                  hintText: "Enter Question"),
                             ),
                           ),
-                        ),
-                        Form(
-                          child:SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: TextFormField(
-                                  controller: questionController,
-                                    decoration: InputDecoration(
-                                    labelText: "Question",
-                                    hintText:"Enter Question"
-                              ),
-                                ),
-                              ),
-                              Divider(color: Colors.purple,thickness: 5.0,),
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: TextFormField(
-                                  controller: optionController1,
-                                  decoration: InputDecoration(
-                                  labelText:"Option 1",
-                                  hintText:"Enter Option 1"
-                              ),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: CheckboxListTile(  
-                                title: Text("Option 1 is Correct!"),
-                                  value: this.option1,   
-                                 onChanged: (bool value) {  
-                               setState(() {  
-                                this.option1 = value;   
-                              });  
-                               },  
-                              ), 
-                              ),
-                              Divider(color: Colors.purple,thickness: 5.0,),
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: TextFormField(
-                                  controller: optionController2,
-                                  decoration: InputDecoration(
-                                  labelText:"Option 2",
-                                  hintText:"Enter Option 2"
-                              ),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: CheckboxListTile(  
-                                title: Text("Option 2 is Correct!"), 
-                                  value: this.option2,   
-                                 onChanged: (bool value) {  
-                               setState(() {  
-                                this.option2 = value;   
-                              });  
-                               },  
-                              ), 
-                              ),
-                              Divider(color: Colors.purple,thickness: 5.0,),
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: TextFormField(
-                                  controller: optionController3,
-                                  decoration: InputDecoration(
-                                  labelText:"Option 3",
-                                  hintText:"Enter Option 3"
-                              ),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: CheckboxListTile(  
-                                title: Text("Option 3 is Correct!"), 
-                                  value: this.option3,   
-                                 onChanged: (bool value) {  
-                               setState(() {  
-                                this.option3 = value;   
-                              });  
-                               },  
-                              ), 
-                              ),
-                              Divider(color: Colors.purple,thickness: 5.0,),
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: TextFormField(
-                                  controller: optionController4,
-                                  decoration: InputDecoration(
-                                  labelText:"Option 4",
-                                  hintText:"Enter Option 4"
-                              ),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: CheckboxListTile(  
-                                title: Text("Option 4 is Correct!"),
-                                value: this.option4,   
-                                 onChanged: (bool value) {  
-                               setState(() {  
-                                this.option4 = value;   
-                              });  
-                               },  
-                              ), 
-                              ),
-                              Divider(color: Colors.purple,thickness: 5.0,),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: FlatButton(
-                                 child: Text(isEditing? "UPDATE" : 'ADD '),  
-                                 color: Colors.blueAccent, 
-                                 textColor: Colors.white,
-                                     onPressed: (){
-                                       if(questionController.text.isEmpty || optionController1.text.isEmpty || optionController2.text.isEmpty || optionController3.text.isEmpty || optionController4.text.isEmpty){
-                                        showValidationDialog(context , "Every Text Field Has to be filled !");
-                                       }
-                                       else if(option1 == false && option2 == false && option3 == false && option4 == false){
-                                         showValidationDialog(context, "Atleast one correct answer has to be selected");
-                                       }
-                                       else{
-                                          if(isEditing == true){
-                                          updateQuestion();
-                                           }else{
-                                            addQuestion();
-                                          }
-                                        Navigator.of(context).pop();
-                                        reinitializeState();
-                                       }
-                                      
-                                    },
-                                ),
-                                 
-                                  
-                                ),
-                              
-                            ],
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: TextFormField(
+                              controller: optionController1,
+                              decoration: InputDecoration(
+                                  labelText: "Option 1",
+                                  hintText: "Enter Option 1"),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: CheckboxListTile(
+                              title: Text("Option 1 is Correct!"),
+                              value: this.option1,
+                              onChanged: (bool value) {
+                                setState(() {
+                                  this.option1 = value;
+                                });
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: TextFormField(
+                              controller: optionController2,
+                              decoration: InputDecoration(
+                                  labelText: "Option 2",
+                                  hintText: "Enter Option 2"),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: CheckboxListTile(
+                              title: Text("Option 2 is Correct!"),
+                              value: this.option2,
+                              onChanged: (bool value) {
+                                setState(() {
+                                  this.option2 = value;
+                                });
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: TextFormField(
+                              controller: optionController3,
+                              decoration: InputDecoration(
+                                  labelText: "Option 3",
+                                  hintText: "Enter Option 2"),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: CheckboxListTile(
+                              title: Text("Option 3 is Correct!"),
+                              value: this.option3,
+                              onChanged: (bool value) {
+                                setState(() {
+                                  this.option3 = value;
+                                });
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: TextFormField(
+                              controller: optionController4,
+                              decoration: InputDecoration(
+                                  labelText: "Option 4",
+                                  hintText: "Enter Option 4"),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: CheckboxListTile(
+                              title: Text("Option 4 is Correct!"),
+                              value: this.option4,
+                              onChanged: (bool value) {
+                                setState(() {
+                                  this.option4 = value;
+                                });
+                              },
+                            ),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -480,8 +433,8 @@ viewAddUpdateDialogBox(BuildContext context){
   Widget listItemBuild(
       BuildContext context, DocumentSnapshot data, int questionNumber) {
     final questionObj = Question.fromJson(data.data(), data.reference);
-    final String _formattedQuestionText =
-        "( " + questionNumber.toString() + " ) " + questionObj.question;
+    final String formattedQuestionNumberText = " "+questionNumber.toString() + " ";
+
     return Padding(
       key: ValueKey(questionObj.question),
       padding: EdgeInsets.symmetric(vertical: 19, horizontal: 1),
@@ -494,9 +447,21 @@ viewAddUpdateDialogBox(BuildContext context){
           child: ListTile(
             title: Column(
               children: <Widget>[
-                Row(children: <Widget>[
-                  Icon(Icons.help_center_rounded, color: Colors.purple),
-                  Flexible(child: Text(_formattedQuestionText)),
+                Row(
+
+                    children: <Widget>[
+                      Container(
+             child: Text(formattedQuestionNumberText,style: TextStyle(color: Colors.white)),
+                        decoration: BoxDecoration (
+                            borderRadius: BorderRadius.all( Radius.circular(5)),
+                            color: Colors.purple
+                        ),
+                        padding: EdgeInsets.all(3.0),
+                        margin: const EdgeInsets.only(right: 5.0),
+          ),
+                      Flexible(child: Text(questionObj.question)),
+
+
                 ]),
                 Divider(),
                 Row(children: <Widget>[
@@ -568,7 +533,7 @@ viewAddUpdateDialogBox(BuildContext context){
         ),
         backgroundColor: Colors.purple,
       ),
-      drawer: Drawer(),
+      drawer: MainDrawer(),
       body: Container(
         padding: EdgeInsets.all(19),
         child: Column(
@@ -579,9 +544,12 @@ viewAddUpdateDialogBox(BuildContext context){
             SizedBox(
               height: 20,
             ),
-            Text(
-              "QUIZ LIST",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+            Wrap(crossAxisAlignment: WrapCrossAlignment.center,
+                children:[Icon(Icons.help_center_rounded, color: Colors.purple),
+                  Text(
+                    " QUIZ LIST",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+                  )]
             ),
             SizedBox(
               height: 20,

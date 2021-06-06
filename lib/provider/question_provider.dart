@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:guess_app/controllers/question_controller.dart';
 import 'package:guess_app/models/question.dart';
-import 'package:guess_app/screens/score_page.dart';
 
 class QuestionProvider with ChangeNotifier {
   // data members

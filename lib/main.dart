@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:guess_app/screens/home.dart';
 import 'package:guess_app/screens/login.dart';
 import 'package:guess_app/screens/quiz.dart';
-import 'package:guess_app/screens/quizAdminApp.dart';
+import 'package:guess_app/screens/quizAdmin.dart';
 import 'package:guess_app/screens/register.dart';
 import 'package:guess_app/screens/splash.dart';
 import 'package:guess_app/screens/welcome.dart';
@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         "welcome": (BuildContext context) => WelcomeScreen(),
         "quiz": (BuildContext context) => QuizScreen(),
         "home": (BuildContext context) => HomeScreen(),
-        "admin": (BuildContext context) => QuizAdminApp(),
+        "admin": (BuildContext context) => QuizAdminDemo(),
       },
     );
   }
