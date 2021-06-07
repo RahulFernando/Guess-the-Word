@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:guess_app/screens/welcome.dart';
 import 'package:guess_app/utils/color.dart';
+import 'package:page_transition/page_transition.dart';
 
 
 class SplashScreen extends StatefulWidget {
@@ -10,31 +12,20 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    Timer(const Duration(milliseconds: 4000), () {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => WelcomeScreen()));
-    });
-  }
+  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-              colors: [purpleColors, purpleLightColors],
-              end: Alignment.bottomCenter,
-              begin: Alignment.topCenter),
-        ),
-        child: Center(
-          child: Image.asset("assets/img/Logo.png"),
-        ),
-      ),
+      body:AnimatedSplashScreen(
+          duration: 3000,
+          splash: 'assets/img/Logo.png',
+          nextScreen: WelcomeScreen(),
+          splashTransition: SplashTransition.rotationTransition,
+          pageTransitionType: PageTransitionType.bottomToTop,
+          backgroundColor: Colors.purple,
+        )
     );
   }
 }
