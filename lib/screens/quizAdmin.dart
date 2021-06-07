@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:guess_app/widgets/main_drawer.dart';
 
 import '../controllers/question_controller.dart';
 import '../models/question.dart';
@@ -251,6 +252,10 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
             return AlertDialog(
               title: Text(isEditing ? "UPDATE QUESTION" : "ADD NEW QUESTION"),
               backgroundColor: Colors.purple.shade100,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(45),
+                ),
+              elevation: 0,
               content: Stack(
                 overflow: Overflow.visible,
                 children: <Widget>[
@@ -282,6 +287,7 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
                                   hintText: "Enter Question"),
                             ),
                           ),
+                          Divider(color: Colors.purple,thickness: 5.0,),
                           Padding(
                             padding: EdgeInsets.all(8.0),
                             child: TextFormField(
@@ -303,6 +309,7 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
                               },
                             ),
                           ),
+                          Divider(color: Colors.purple,thickness: 5.0,),
                           Padding(
                             padding: EdgeInsets.all(8.0),
                             child: TextFormField(
@@ -324,13 +331,14 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
                               },
                             ),
                           ),
+                          Divider(color: Colors.purple,thickness: 5.0,),
                           Padding(
                             padding: EdgeInsets.all(8.0),
                             child: TextFormField(
                               controller: optionController3,
                               decoration: InputDecoration(
                                   labelText: "Option 3",
-                                  hintText: "Enter Option 2"),
+                                  hintText: "Enter Option 3"),
                             ),
                           ),
                           Padding(
@@ -345,6 +353,7 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
                               },
                             ),
                           ),
+                          Divider(color: Colors.purple,thickness: 5.0,),
                           Padding(
                             padding: EdgeInsets.all(8.0),
                             child: TextFormField(
@@ -366,10 +375,13 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
                               },
                             ),
                           ),
+                          Divider(color: Colors.purple,thickness: 5.0,),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: RaisedButton(
-                              child: Text(isEditing ? "UPDATE" : "ADD"),
+                            child: FlatButton(
+                                 child: Text(isEditing? "UPDATE" : 'ADD '),
+                                 color: Colors.purple,
+                                 textColor: Colors.white,
                               onPressed: () {
                                 if (questionController.text.isEmpty ||
                                     optionController1.text.isEmpty ||
@@ -377,13 +389,13 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
                                     optionController3.text.isEmpty ||
                                     optionController4.text.isEmpty) {
                                   showValidationDialog(context,
-                                      "Every Text Field Has to be filled !");
+                                      "Every text field has to be filled !");
                                 } else if (option1 == false &&
                                     option2 == false &&
                                     option3 == false &&
                                     option4 == false) {
                                   showValidationDialog(context,
-                                      "Atleast one correct answer has to be selected");
+                                      "Atleast one correct answer has to be selected !");
                                 } else {
                                   if (isEditing == true) {
                                     updateQuestion();
@@ -462,37 +474,10 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
 //Load list and convert to a list view
   Widget buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
     int _currentQuestionNumber = 0;
-
-    List<Widget> _renderList = [];
-
-    _renderList.add(TextField(
-      controller: _searchController,
-
-      decoration: InputDecoration(
-          prefixIcon: IconButton(
-            color: Colors.black,
-            icon: Icon(Icons.search),
-            iconSize: 20.0,
-
-          ),
-          suffixIcon:IconButton(
-              color: Colors.black,
-              icon: Icon(Icons.clear),
-              iconSize: 20.0,
-              onPressed: ()=> _searchController.clear()
-
-          ),
-          contentPadding: EdgeInsets.only(left: 25.0),
-          hintText: 'Search by question',
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(4.0))),
-    ));
-    snapshot.forEach((data) {
-      _renderList.add(listItemBuild(context, data, ++_currentQuestionNumber));
-    });
-
     return ListView(
-      children: _renderList,
+      children:snapshot.map((data) => listItemBuild(context, data, ++_currentQuestionNumber)).toList()
     );
+
   }
 
 //Load Single Question Object a single item
@@ -609,7 +594,7 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
         ),
         backgroundColor: Colors.purple,
       ),
-      drawer: Drawer(),
+      drawer: MainDrawer(),
       body: Container(
         padding: EdgeInsets.all(19),
         child: Column(
@@ -630,6 +615,27 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
             SizedBox(
               height: 20,
             ),
+          TextField(
+            controller: _searchController,
+
+            decoration: InputDecoration(
+                prefixIcon: IconButton(
+                  color: Colors.black,
+                  icon: Icon(Icons.search),
+                  iconSize: 20.0,
+
+                ),
+                suffixIcon:IconButton(
+                    color: Colors.black,
+                    icon: Icon(Icons.clear),
+                    iconSize: 20.0,
+                    onPressed: ()=> _searchController.clear()
+
+                ),
+                contentPadding: EdgeInsets.only(left: 25.0),
+                hintText: 'Search by question',
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(4.0))),
+          ),
             Flexible(child: buildBody(context))
           ],
         ),
