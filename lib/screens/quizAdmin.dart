@@ -213,7 +213,7 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
         builder: (context) {
           return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
-              title: Text(isEditing ? "UPDATE QUESTION" : "ADD NEW QUESTION"),
+              title: Text(isEditing ? "UPDATE QUESTION" : "ADD NEW QUESTION",textAlign: TextAlign.center),
               backgroundColor: Colors.purple.shade100,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(45),
@@ -227,7 +227,6 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
                     top: -80,
                     child: InkResponse(
                       onTap: () {
-                        reinitializeState();
                         Navigator.of(context).pop();
                       },
                       child: CircleAvatar(
