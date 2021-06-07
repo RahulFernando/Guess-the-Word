@@ -19,8 +19,9 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body:AnimatedSplashScreen(
-          duration: 3000,
+          duration: 4000,
           splash: 'assets/img/Logo.png',
+          splashIconSize: 130,
           nextScreen: WelcomeScreen(),
           splashTransition: SplashTransition.sizeTransition,
           pageTransitionType: PageTransitionType.bottomToTop,
