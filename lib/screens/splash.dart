@@ -22,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
           duration: 3000,
           splash: 'assets/img/Logo.png',
           nextScreen: WelcomeScreen(),
-          splashTransition: SplashTransition.rotationTransition,
+          splashTransition: SplashTransition.sizeTransition,
           pageTransitionType: PageTransitionType.bottomToTop,
           backgroundColor: Colors.purple,
         )
