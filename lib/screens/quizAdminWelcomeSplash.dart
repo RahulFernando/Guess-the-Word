@@ -35,7 +35,7 @@ class _QuizAdminWelcomeSplashScreen extends State<QuizAdminWelcomeSplashScreen> 
           SizedBox(
             height: 50,
              child: Text(
-              'Guess The Word Admin App !',
+              'Welcome to Guess The Word Admin App !',
               style: TextStyle(fontSize: 18,color: Colors.white),
               
             ),
