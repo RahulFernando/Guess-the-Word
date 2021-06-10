@@ -64,18 +64,29 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
   _onSearchChanged() {
     List<QueryDocumentSnapshot> filteredResultsList = [];
     _resultsList.forEach((element) {
+      String questionTitle = element.data()["question"];
+      String option1 = element.data()["options"][0];
+      String option2 = element.data()["options"][0];
+      String option3 = element.data()["options"][1];
+      String option4 = element.data()["options"][2];
 
-        String questionTitle = element.data()["question"];
-        String option1 = element.data()["options"][0];
-        String option2 = element.data()["options"][0];
-        String option3 = element.data()["options"][1];
-        String option4 = element.data()["options"][2];
-
-
-        if (questionTitle.toLowerCase().contains(_searchController.text.toLowerCase()) || option1.toLowerCase().contains(_searchController.text.toLowerCase()) || option2.toLowerCase().contains(_searchController.text.toLowerCase()) ||option3.toLowerCase().contains(_searchController.text.toLowerCase()) || option4.toLowerCase().contains(_searchController.text.toLowerCase())  ) {
-          filteredResultsList.add(element);
-        }
-
+      if (questionTitle
+              .toLowerCase()
+              .contains(_searchController.text.toLowerCase()) ||
+          option1
+              .toLowerCase()
+              .contains(_searchController.text.toLowerCase()) ||
+          option2
+              .toLowerCase()
+              .contains(_searchController.text.toLowerCase()) ||
+          option3
+              .toLowerCase()
+              .contains(_searchController.text.toLowerCase()) ||
+          option4
+              .toLowerCase()
+              .contains(_searchController.text.toLowerCase())) {
+        filteredResultsList.add(element);
+      }
     });
     setState(() {
       _searchResultsList = filteredResultsList;
@@ -257,11 +268,12 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
         builder: (context) {
           return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
-              title: Text(isEditing ? "UPDATE QUESTION" : "ADD NEW QUESTION",textAlign: TextAlign.center),
+              title: Text(isEditing ? "UPDATE QUESTION" : "ADD NEW QUESTION",
+                  textAlign: TextAlign.center),
               backgroundColor: Colors.purple.shade100,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(45),
-                ),
+              ),
               elevation: 0,
               content: Stack(
                 overflow: Overflow.visible,
@@ -293,7 +305,10 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
                                   hintText: "Enter Question"),
                             ),
                           ),
-                          Divider(color: Colors.purple,thickness: 5.0,),
+                          Divider(
+                            color: Colors.purple,
+                            thickness: 5.0,
+                          ),
                           Padding(
                             padding: EdgeInsets.all(8.0),
                             child: TextFormField(
@@ -315,7 +330,10 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
                               },
                             ),
                           ),
-                          Divider(color: Colors.purple,thickness: 5.0,),
+                          Divider(
+                            color: Colors.purple,
+                            thickness: 5.0,
+                          ),
                           Padding(
                             padding: EdgeInsets.all(8.0),
                             child: TextFormField(
@@ -337,7 +355,10 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
                               },
                             ),
                           ),
-                          Divider(color: Colors.purple,thickness: 5.0,),
+                          Divider(
+                            color: Colors.purple,
+                            thickness: 5.0,
+                          ),
                           Padding(
                             padding: EdgeInsets.all(8.0),
                             child: TextFormField(
@@ -359,7 +380,10 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
                               },
                             ),
                           ),
-                          Divider(color: Colors.purple,thickness: 5.0,),
+                          Divider(
+                            color: Colors.purple,
+                            thickness: 5.0,
+                          ),
                           Padding(
                             padding: EdgeInsets.all(8.0),
                             child: TextFormField(
@@ -381,13 +405,16 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
                               },
                             ),
                           ),
-                          Divider(color: Colors.purple,thickness: 5.0,),
+                          Divider(
+                            color: Colors.purple,
+                            thickness: 5.0,
+                          ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: FlatButton(
-                                 child: Text(isEditing? "UPDATE" : 'ADD '),
-                                 color: Colors.purple,
-                                 textColor: Colors.white,
+                              child: Text(isEditing ? "UPDATE" : 'ADD '),
+                              color: Colors.purple,
+                              textColor: Colors.white,
                               onPressed: () {
                                 if (questionController.text.isEmpty ||
                                     optionController1.text.isEmpty ||
@@ -481,9 +508,10 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
   Widget buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
     int _currentQuestionNumber = 0;
     return ListView(
-      children:snapshot.map((data) => listItemBuild(context, data, ++_currentQuestionNumber)).toList()
-    );
-
+        children: snapshot
+            .map((data) =>
+                listItemBuild(context, data, ++_currentQuestionNumber))
+            .toList());
   }
 
 //Load Single Question Object a single item
@@ -500,7 +528,6 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
         decoration: BoxDecoration(
           border: Border.all(color: Colors.blue),
           borderRadius: BorderRadius.circular(4),
-
         ),
         child: SingleChildScrollView(
           child: ListTile(
@@ -516,60 +543,64 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
                     padding: EdgeInsets.all(3.0),
                     margin: const EdgeInsets.only(right: 5.0),
                   ),
-                  Flexible(child: SubstringHighlight(
-                    text: questionObj.question,                         // each string needing highlighting
-                    term: _searchController.text,                           // user typed "m4a"
-                    textStyle: TextStyle(                       // non-highlight style
-                      color: Colors.black,
-                      fontSize: 16
-                    ),
-                    textStyleHighlight: TextStyle(              // highlight style
+                  Flexible(
+                      child: SubstringHighlight(
+                    text: questionObj.question,
+                    term: _searchController.text,
+                    textStyle: TextStyle(
+                        // non-highlight style
+                        color: Colors.black,
+                        fontSize: 16),
+                    textStyleHighlight: TextStyle(
+                      // highlight style
                       color: Colors.black,
                       backgroundColor: Colors.yellow,
-
                     ),
                   )),
                 ]),
                 Divider(),
                 Row(children: <Widget>[
-                Container(
-                 child: Icon(Icons.question_answer_rounded, color: Colors.orange),
-                  margin: const EdgeInsets.only(right: 3.0),
-      ),
-                  Flexible(child:SubstringHighlight(
-                    text: questionObj.options[0],                         // each string needing highlighting
-                    term: _searchController.text,                           // user typed "m4a"
-                    textStyle: TextStyle(                       // non-highlight style
+                  Container(
+                    child: Icon(Icons.question_answer_rounded,
+                        color: Colors.orange),
+                    margin: const EdgeInsets.only(right: 3.0),
+                  ),
+                  Flexible(
+                      child: SubstringHighlight(
+                    text: questionObj.options[0],
+                    term: _searchController.text,
+                    textStyle: TextStyle(
+                        // non-highlight style
                         color: Colors.black,
-                        fontSize: 16
-                    ),
-                    textStyleHighlight: TextStyle(              // highlight style
+                        fontSize: 16),
+                    textStyleHighlight: TextStyle(
+                      // highlight style
                       color: Colors.black,
                       backgroundColor: Colors.yellow,
-
                     ),
-                  )
-                  ),
+                  )),
                   if (questionObj.answers[0])
                     Icon(Icons.check_circle_outline_rounded,
                         color: Colors.green),
                 ]),
                 Row(children: <Widget>[
                   Container(
-                    child: Icon(Icons.question_answer_rounded, color: Colors.orange),
+                    child: Icon(Icons.question_answer_rounded,
+                        color: Colors.orange),
                     margin: const EdgeInsets.only(right: 3.0),
                   ),
-                  Flexible(child: SubstringHighlight(
-                    text: questionObj.options[1],                         // each string needing highlighting
-                    term: _searchController.text,                           // user typed "m4a"
-                    textStyle: TextStyle(                       // non-highlight style
+                  Flexible(
+                      child: SubstringHighlight(
+                    text: questionObj.options[1],
+                    term: _searchController.text,
+                    textStyle: TextStyle(
+                        // non-highlight style
                         color: Colors.black,
-                        fontSize: 16
-                    ),
-                    textStyleHighlight: TextStyle(              // highlight style
+                        fontSize: 16),
+                    textStyleHighlight: TextStyle(
+                      // highlight style
                       color: Colors.black,
                       backgroundColor: Colors.yellow,
-
                     ),
                   )),
                   if (questionObj.answers[1])
@@ -578,20 +609,22 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
                 ]),
                 Row(children: <Widget>[
                   Container(
-                    child: Icon(Icons.question_answer_rounded, color: Colors.orange),
+                    child: Icon(Icons.question_answer_rounded,
+                        color: Colors.orange),
                     margin: const EdgeInsets.only(right: 3.0),
                   ),
-                  Flexible(child: SubstringHighlight(
-                    text: questionObj.options[2],                         // each string needing highlighting
-                    term: _searchController.text,                           // user typed "m4a"
-                    textStyle: TextStyle(                       // non-highlight style
+                  Flexible(
+                      child: SubstringHighlight(
+                    text: questionObj.options[2],
+                    term: _searchController.text,
+                    textStyle: TextStyle(
+                        // non-highlight style
                         color: Colors.black,
-                        fontSize: 16
-                    ),
-                    textStyleHighlight: TextStyle(              // highlight style
+                        fontSize: 16),
+                    textStyleHighlight: TextStyle(
+                      // highlight style
                       color: Colors.black,
                       backgroundColor: Colors.yellow,
-
                     ),
                   )),
                   if (questionObj.answers[2])
@@ -600,20 +633,21 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
                 ]),
                 Row(children: <Widget>[
                   Container(
-                    child: Icon(Icons.question_answer_rounded, color: Colors.orange),
+                    child: Icon(Icons.question_answer_rounded,
+                        color: Colors.orange),
                     margin: const EdgeInsets.only(right: 3.0),
                   ),
-                  Flexible(child: SubstringHighlight(
-                    text: questionObj.options[3],                         // each string needing highlighting
-                    term: _searchController.text,                           // user typed "m4a"
-                    textStyle: TextStyle(                       // non-highlight style
+                  Flexible(
+                      child: SubstringHighlight(
+                    text: questionObj.options[3],
+                    textStyle: TextStyle(
+                        // non-highlight style
                         color: Colors.black,
-                        fontSize: 16
-                    ),
-                    textStyleHighlight: TextStyle(              // highlight style
+                        fontSize: 16),
+                    textStyleHighlight: TextStyle(
+                      // highlight style
                       color: Colors.black,
                       backgroundColor: Colors.yellow,
-
                     ),
                   )),
                   if (questionObj.answers[3])
@@ -673,7 +707,7 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
               height: 20,
             ),
             Wrap(crossAxisAlignment: WrapCrossAlignment.center, children: [
-              Icon(Icons.help_center_rounded, color: Colors.purple,size: 30),
+              Icon(Icons.help_center_rounded, color: Colors.purple, size: 30),
               Text(
                 " QUIZ LIST",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
@@ -682,27 +716,24 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
             SizedBox(
               height: 20,
             ),
-          TextField(
-            controller: _searchController,
-
-            decoration: InputDecoration(
-                prefixIcon: IconButton(
-                  color: Colors.black,
-                  icon: Icon(Icons.search),
-                  iconSize: 20.0,
-
-                ),
-                suffixIcon:IconButton(
+            TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                  prefixIcon: IconButton(
                     color: Colors.black,
-                    icon: Icon(Icons.clear),
+                    icon: Icon(Icons.search),
                     iconSize: 20.0,
-                    onPressed: ()=> _searchController.clear()
-
-                ),
-                contentPadding: EdgeInsets.only(left: 25.0),
-                hintText: 'Search by question',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(4.0))),
-          ),
+                  ),
+                  suffixIcon: IconButton(
+                      color: Colors.black,
+                      icon: Icon(Icons.clear),
+                      iconSize: 20.0,
+                      onPressed: () => _searchController.clear()),
+                  contentPadding: EdgeInsets.only(left: 25.0),
+                  hintText: 'Search by question',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(4.0))),
+            ),
             Flexible(child: buildBody(context))
           ],
         ),
