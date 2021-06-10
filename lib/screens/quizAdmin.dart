@@ -66,9 +66,9 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
     _resultsList.forEach((element) {
       String questionTitle = element.data()["question"];
       String option1 = element.data()["options"][0];
-      String option2 = element.data()["options"][0];
-      String option3 = element.data()["options"][1];
-      String option4 = element.data()["options"][2];
+      String option2 = element.data()["options"][1];
+      String option3 = element.data()["options"][2];
+      String option4 = element.data()["options"][3];
 
       if (questionTitle
               .toLowerCase()
@@ -640,6 +640,7 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
                   Flexible(
                       child: SubstringHighlight(
                     text: questionObj.options[3],
+                    term: _searchController.text,
                     textStyle: TextStyle(
                         // non-highlight style
                         color: Colors.black,
