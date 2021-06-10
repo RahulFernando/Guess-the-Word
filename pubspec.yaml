@@ -33,6 +33,7 @@ dependencies:
   firebase_auth: ^0.18.4+1
   provider: ^4.3.2+2
   get: ^3.24.0
+  substring_highlight: ^1.0.33
   
   
   fluttertoast: ^3.1.0

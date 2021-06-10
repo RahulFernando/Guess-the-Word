@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:guess_app/widgets/main_drawer.dart';
+import 'package:substring_highlight/substring_highlight.dart';
 
 import '../controllers/question_controller.dart';
 import '../models/question.dart';
@@ -63,12 +64,18 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
   _onSearchChanged() {
     List<QueryDocumentSnapshot> filteredResultsList = [];
     _resultsList.forEach((element) {
-      if (element.data().keys.contains("question")) {
+
         String questionTitle = element.data()["question"];
-        if (questionTitle.contains(_searchController.text)) {
+        String option1 = element.data()["options"][0];
+        String option2 = element.data()["options"][0];
+        String option3 = element.data()["options"][1];
+        String option4 = element.data()["options"][2];
+
+
+        if (questionTitle.toLowerCase().contains(_searchController.text.toLowerCase()) || option1.toLowerCase().contains(_searchController.text.toLowerCase()) || option2.toLowerCase().contains(_searchController.text.toLowerCase()) ||option3.toLowerCase().contains(_searchController.text.toLowerCase()) || option4.toLowerCase().contains(_searchController.text.toLowerCase())  ) {
           filteredResultsList.add(element);
         }
-      }
+
     });
     setState(() {
       _searchResultsList = filteredResultsList;
@@ -509,7 +516,19 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
                     padding: EdgeInsets.all(3.0),
                     margin: const EdgeInsets.only(right: 5.0),
                   ),
-                  Flexible(child: Text(questionObj.question)),
+                  Flexible(child: SubstringHighlight(
+                    text: questionObj.question,                         // each string needing highlighting
+                    term: _searchController.text,                           // user typed "m4a"
+                    textStyle: TextStyle(                       // non-highlight style
+                      color: Colors.black,
+                      fontSize: 16
+                    ),
+                    textStyleHighlight: TextStyle(              // highlight style
+                      color: Colors.black,
+                      backgroundColor: Colors.yellow,
+
+                    ),
+                  )),
                 ]),
                 Divider(),
                 Row(children: <Widget>[
@@ -517,7 +536,20 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
                  child: Icon(Icons.question_answer_rounded, color: Colors.orange),
                   margin: const EdgeInsets.only(right: 3.0),
       ),
-                  Flexible(child: Text(questionObj.options[0])),
+                  Flexible(child:SubstringHighlight(
+                    text: questionObj.options[0],                         // each string needing highlighting
+                    term: _searchController.text,                           // user typed "m4a"
+                    textStyle: TextStyle(                       // non-highlight style
+                        color: Colors.black,
+                        fontSize: 16
+                    ),
+                    textStyleHighlight: TextStyle(              // highlight style
+                      color: Colors.black,
+                      backgroundColor: Colors.yellow,
+
+                    ),
+                  )
+                  ),
                   if (questionObj.answers[0])
                     Icon(Icons.check_circle_outline_rounded,
                         color: Colors.green),
@@ -527,7 +559,19 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
                     child: Icon(Icons.question_answer_rounded, color: Colors.orange),
                     margin: const EdgeInsets.only(right: 3.0),
                   ),
-                  Flexible(child: Text(questionObj.options[1])),
+                  Flexible(child: SubstringHighlight(
+                    text: questionObj.options[1],                         // each string needing highlighting
+                    term: _searchController.text,                           // user typed "m4a"
+                    textStyle: TextStyle(                       // non-highlight style
+                        color: Colors.black,
+                        fontSize: 16
+                    ),
+                    textStyleHighlight: TextStyle(              // highlight style
+                      color: Colors.black,
+                      backgroundColor: Colors.yellow,
+
+                    ),
+                  )),
                   if (questionObj.answers[1])
                     Icon(Icons.check_circle_outline_rounded,
                         color: Colors.green),
@@ -537,7 +581,19 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
                     child: Icon(Icons.question_answer_rounded, color: Colors.orange),
                     margin: const EdgeInsets.only(right: 3.0),
                   ),
-                  Flexible(child: Text(questionObj.options[2])),
+                  Flexible(child: SubstringHighlight(
+                    text: questionObj.options[2],                         // each string needing highlighting
+                    term: _searchController.text,                           // user typed "m4a"
+                    textStyle: TextStyle(                       // non-highlight style
+                        color: Colors.black,
+                        fontSize: 16
+                    ),
+                    textStyleHighlight: TextStyle(              // highlight style
+                      color: Colors.black,
+                      backgroundColor: Colors.yellow,
+
+                    ),
+                  )),
                   if (questionObj.answers[2])
                     Icon(Icons.check_circle_outline_rounded,
                         color: Colors.green),
@@ -547,7 +603,19 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
                     child: Icon(Icons.question_answer_rounded, color: Colors.orange),
                     margin: const EdgeInsets.only(right: 3.0),
                   ),
-                  Flexible(child: Text(questionObj.options[3])),
+                  Flexible(child: SubstringHighlight(
+                    text: questionObj.options[3],                         // each string needing highlighting
+                    term: _searchController.text,                           // user typed "m4a"
+                    textStyle: TextStyle(                       // non-highlight style
+                        color: Colors.black,
+                        fontSize: 16
+                    ),
+                    textStyleHighlight: TextStyle(              // highlight style
+                      color: Colors.black,
+                      backgroundColor: Colors.yellow,
+
+                    ),
+                  )),
                   if (questionObj.answers[3])
                     Icon(Icons.check_circle_outline_rounded,
                         color: Colors.green),
