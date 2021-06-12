@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -61,31 +62,33 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
     super.dispose();
   }
 
-  /// Initilalize the necessary state changes needed after performing a search operation
+  /// Initializes the necessary state changes needed after performing a search operation
   _onSearchChanged() {
     List<QueryDocumentSnapshot> filteredResultsList = [];
     _resultsList.forEach((element) {
-      String questionTitle = element.data()["question"];
-      String option1 = element.data()["options"][0];
-      String option2 = element.data()["options"][1];
-      String option3 = element.data()["options"][2];
-      String option4 = element.data()["options"][3];
+      Question currentQuestion =
+          Question.fromJson(element.data(), element.reference);
+      String formattedSearchText = _searchController.text.toLowerCase();
 
-      if (questionTitle
+      if (currentQuestion.question
               .toLowerCase()
-              .contains(_searchController.text.toLowerCase()) ||
-          option1
+              .contains(formattedSearchText) ||
+          currentQuestion.options
+              .elementAt(0)
               .toLowerCase()
-              .contains(_searchController.text.toLowerCase()) ||
-          option2
+              .contains(formattedSearchText) ||
+          currentQuestion.options
+              .elementAt(1)
               .toLowerCase()
-              .contains(_searchController.text.toLowerCase()) ||
-          option3
+              .contains(formattedSearchText) ||
+          currentQuestion.options
+              .elementAt(2)
               .toLowerCase()
-              .contains(_searchController.text.toLowerCase()) ||
-          option4
+              .contains(formattedSearchText) ||
+          currentQuestion.options
+              .elementAt(3)
               .toLowerCase()
-              .contains(_searchController.text.toLowerCase())) {
+              .contains(formattedSearchText)) {
         filteredResultsList.add(element);
       }
     });
@@ -174,7 +177,7 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
     _showDeleteItemToastMessage();
   }
 
-  ///Displays a toast message after performig a successful deletion
+  ///Displays a toast message after performing a successful deletion
   _showDeleteItemToastMessage() {
     Fluttertoast.showToast(
         msg: 'Selected Question has been deleted !',
@@ -185,6 +188,7 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
         textColor: Colors.red);
   }
 
+//Displays a toast message after performing a successful delete all
   _showDeleteAllToastMessage() {
     Fluttertoast.showToast(
         msg: 'All the Questions have been deleted !',
@@ -262,8 +266,39 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: Text("Delete Confirmation "),
-      content: Text(
-          "Are you sure you want to permently delete this question from the list?"),
+//      content: Text(
+//          "Are you sure you want to permanently delete this question from the list?"),
+      content: SingleChildScrollView(
+        child: ListBody(
+          children: <Widget>[
+            Text(
+                "Are you sure you want to permanently delete this question from the list?"),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Flexible(
+                    flex: 1,
+                    child: CupertinoButton(
+                      onPressed: () => {},
+                      color: Colors.amber,
+                      minSize: double.minPositive,
+                      padding: EdgeInsets.fromLTRB(2, 3, 2, 3),
+                      child:
+                          Icon(Icons.lightbulb, color: Colors.purple, size: 21),
+                    )),
+                Flexible(
+                  flex: 8,
+                  child: Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: Text(
+                          'To perform a quick deletion swipe the item horizontally by starting from either left or right.',
+                          style: TextStyle(fontSize: 12, color: Colors.grey))),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
       actions: [
         cancelButton,
         continueButton,
@@ -299,7 +334,7 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
     AlertDialog alert = AlertDialog(
       title: Text("Delete Confirmation "),
       content: Text(
-          "Are you Sure you want to permenantly delete all the questios in the list?"),
+          "Are you sure you want to permanently delete all the questions in the list??"),
       actions: [
         cancelButton,
         continueButton,
@@ -592,7 +627,7 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
               color: Colors.purple,
               child: Padding(
                 padding: const EdgeInsets.all(15),
-                child: Icon(Icons.delete, color: Colors.white),
+                child: Icon(Icons.delete, color: Colors.red, size: 50),
               ),
             ),
             child: Container(
