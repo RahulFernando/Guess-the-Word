@@ -12,7 +12,7 @@ class QuestionController {
         .toList());
   }
 
-    getAllQuestions(){
+    getAllQuestions(){ 
     return _db.collection('questions').snapshots();
   }
 

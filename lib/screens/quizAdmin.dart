@@ -167,9 +167,14 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
     });
   }
 
-  //call the Delete method in controller
-  deleteQuestion(Question questionObj) {
+  ///Deletes the question by calling controller method delete
+  _deleteQuestion(Question questionObj) {
     controller.deleteQuestion(questionObj);
+    _showDeleteItemToastMessage();
+
+  }
+   ///Displays a toast message after performig a successful deletion
+   _showDeleteItemToastMessage(){
     Fluttertoast.showToast(
         msg: 'Selected Question has been deleted !',
         toastLength: Toast.LENGTH_SHORT,
@@ -226,8 +231,8 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
     );
   }
 
-//Load Delete Confirmation Dialog box
-  showDeleteAlertDialogBox(BuildContext context, Question questionObj) {
+//Loads Delete Confirmation Dialog box
+  _showDeleteAlertDialogBox(BuildContext context, Question questionObj) {
     // set up the buttons
     Widget cancelButton = FlatButton(
       child: Text("Cancel"),
@@ -238,7 +243,7 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
     Widget continueButton = FlatButton(
       child: Text("Continue"),
       onPressed: () {
-        deleteQuestion(questionObj);
+        _deleteQuestion(questionObj);
         Navigator.of(context, rootNavigator: true).pop();
       },
     );
@@ -466,7 +471,7 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
           //Renders the question list based on the search criteria
           if (_searchController.text.isEmpty) {
             return buildList(
-                context, sortListByCreatedDateTimeDesc(_resultsList));
+                context, _sortListByCreatedDateTimeDesc(_resultsList));
           } else {
             return buildList(context, _searchResultsList);
           }
@@ -476,7 +481,7 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
   }
 
   ///  Sort FireStore Collection Documents By Created Date DESC
-  List<QueryDocumentSnapshot> sortListByCreatedDateTimeDesc(
+  List<QueryDocumentSnapshot> _sortListByCreatedDateTimeDesc(
       List<QueryDocumentSnapshot> queryDocumentSnapshotList) {
     queryDocumentSnapshotList.sort((a, b) {
       //Null Value Check
@@ -508,6 +513,7 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
   Widget buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
     int _currentQuestionNumber = 0;
     return ListView(
+      
         children: snapshot
             .map((data) =>
                 listItemBuild(context, data, ++_currentQuestionNumber))
@@ -524,7 +530,13 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
     return Padding(
       key: ValueKey(questionObj.question),
       padding: EdgeInsets.symmetric(vertical: 19, horizontal: 1),
-      child: Container(
+      child: Dismissible(key: Key(questionObj.id.toString()), background: Container(
+        color: Colors.purple,
+        child: Padding(
+          padding: const EdgeInsets.all(15),
+          child: Icon(Icons.delete, color: Colors.white),
+        ),
+      ),child:Container(
         decoration: BoxDecoration(
           border: Border.all(color: Colors.blue),
           borderRadius: BorderRadius.circular(4),
@@ -660,7 +672,7 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
             trailing: IconButton(
                 icon: Icon(Icons.delete, color: Colors.red),
                 onPressed: () {
-                  showDeleteAlertDialogBox(context, questionObj);
+                  _showDeleteAlertDialogBox(context, questionObj);
                 }),
             onTap: () {
               setUpdateUI(questionObj);
@@ -668,7 +680,15 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
           ),
         ),
       ),
-    );
+        onDismissed: (direction) {//Delete the the question on a flick for either side
+          if (direction == DismissDirection.endToStart) {
+            controller.deleteQuestion(questionObj);
+            _showDeleteItemToastMessage();
+          } else {
+            controller.deleteQuestion(questionObj);
+            _showDeleteItemToastMessage();
+          }
+        }));
   }
 
 //Build Widget
