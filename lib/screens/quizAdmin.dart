@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:guess_app/widgets/main_drawer.dart';
 import 'package:substring_highlight/substring_highlight.dart';
@@ -171,12 +172,22 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
   _deleteQuestion(Question questionObj) {
     controller.deleteQuestion(questionObj);
     _showDeleteItemToastMessage();
-
   }
-   ///Displays a toast message after performig a successful deletion
-   _showDeleteItemToastMessage(){
+
+  ///Displays a toast message after performig a successful deletion
+  _showDeleteItemToastMessage() {
     Fluttertoast.showToast(
         msg: 'Selected Question has been deleted !',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIos: 1,
+        backgroundColor: Colors.white,
+        textColor: Colors.red);
+  }
+
+  _showDeleteAllToastMessage() {
+    Fluttertoast.showToast(
+        msg: 'All the Questions have been deleted !',
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIos: 1,
@@ -251,7 +262,44 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: Text("Delete Confirmation "),
-      content: Text("Do you want to delete this Question?"),
+      content: Text(
+          "Are you sure you want to permently delete this question from the list?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  //Loads Delete All Confirmation Dialog box
+  _showDeleteAllAlertDialogBox(BuildContext context) {
+    // set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text("Cancel"),
+      onPressed: () {
+        Navigator.of(context, rootNavigator: true).pop();
+      },
+    );
+    Widget continueButton = FlatButton(
+      child: Text("Continue"),
+      onPressed: () {
+        _deleteAllQuestions();
+        Navigator.of(context, rootNavigator: true).pop();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Delete Confirmation "),
+      content: Text(
+          "Are you Sure you want to permenantly delete all the questios in the list?"),
       actions: [
         cancelButton,
         continueButton,
@@ -457,6 +505,15 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
         });
   }
 
+  ///Deletes all the questions by calling the Delete All method in the question controller
+  _deleteAllQuestions() {
+    List<Question> questionsList = _resultsList
+        .map((e) => Question.fromJson(e.data(), e.reference))
+        .toList();
+    controller.deleteAllQuestions(questionsList);
+    _showDeleteAllToastMessage();
+  }
+
 //Load all the questions to the build body as a widget
   Widget buildBody(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
@@ -513,7 +570,6 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
   Widget buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
     int _currentQuestionNumber = 0;
     return ListView(
-      
         children: snapshot
             .map((data) =>
                 listItemBuild(context, data, ++_currentQuestionNumber))
@@ -528,167 +584,172 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
         " " + questionNumber.toString() + " ";
 
     return Padding(
-      key: ValueKey(questionObj.question),
-      padding: EdgeInsets.symmetric(vertical: 19, horizontal: 1),
-      child: Dismissible(key: Key(questionObj.id.toString()), background: Container(
-        color: Colors.purple,
-        child: Padding(
-          padding: const EdgeInsets.all(15),
-          child: Icon(Icons.delete, color: Colors.white),
-        ),
-      ),child:Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.blue),
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: SingleChildScrollView(
-          child: ListTile(
-            title: Column(
-              children: <Widget>[
-                Row(children: <Widget>[
-                  Container(
-                    child: Text(formattedQuestionNumberText,
-                        style: TextStyle(color: Colors.white)),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                        color: Colors.purple),
-                    padding: EdgeInsets.all(3.0),
-                    margin: const EdgeInsets.only(right: 5.0),
-                  ),
-                  Flexible(
-                      child: SubstringHighlight(
-                    text: questionObj.question,
-                    term: _searchController.text,
-                    textStyle: TextStyle(
-                        // non-highlight style
-                        color: Colors.black,
-                        fontSize: 16),
-                    textStyleHighlight: TextStyle(
-                      // highlight style
-                      color: Colors.black,
-                      backgroundColor: Colors.yellow,
-                    ),
-                  )),
-                ]),
-                Divider(),
-                Row(children: <Widget>[
-                  Container(
-                    child: Icon(Icons.question_answer_rounded,
-                        color: Colors.orange),
-                    margin: const EdgeInsets.only(right: 3.0),
-                  ),
-                  Flexible(
-                      child: SubstringHighlight(
-                    text: questionObj.options[0],
-                    term: _searchController.text,
-                    textStyle: TextStyle(
-                        // non-highlight style
-                        color: Colors.black,
-                        fontSize: 16),
-                    textStyleHighlight: TextStyle(
-                      // highlight style
-                      color: Colors.black,
-                      backgroundColor: Colors.yellow,
-                    ),
-                  )),
-                  if (questionObj.answers[0])
-                    Icon(Icons.check_circle_outline_rounded,
-                        color: Colors.green),
-                ]),
-                Row(children: <Widget>[
-                  Container(
-                    child: Icon(Icons.question_answer_rounded,
-                        color: Colors.orange),
-                    margin: const EdgeInsets.only(right: 3.0),
-                  ),
-                  Flexible(
-                      child: SubstringHighlight(
-                    text: questionObj.options[1],
-                    term: _searchController.text,
-                    textStyle: TextStyle(
-                        // non-highlight style
-                        color: Colors.black,
-                        fontSize: 16),
-                    textStyleHighlight: TextStyle(
-                      // highlight style
-                      color: Colors.black,
-                      backgroundColor: Colors.yellow,
-                    ),
-                  )),
-                  if (questionObj.answers[1])
-                    Icon(Icons.check_circle_outline_rounded,
-                        color: Colors.green),
-                ]),
-                Row(children: <Widget>[
-                  Container(
-                    child: Icon(Icons.question_answer_rounded,
-                        color: Colors.orange),
-                    margin: const EdgeInsets.only(right: 3.0),
-                  ),
-                  Flexible(
-                      child: SubstringHighlight(
-                    text: questionObj.options[2],
-                    term: _searchController.text,
-                    textStyle: TextStyle(
-                        // non-highlight style
-                        color: Colors.black,
-                        fontSize: 16),
-                    textStyleHighlight: TextStyle(
-                      // highlight style
-                      color: Colors.black,
-                      backgroundColor: Colors.yellow,
-                    ),
-                  )),
-                  if (questionObj.answers[2])
-                    Icon(Icons.check_circle_outline_rounded,
-                        color: Colors.green),
-                ]),
-                Row(children: <Widget>[
-                  Container(
-                    child: Icon(Icons.question_answer_rounded,
-                        color: Colors.orange),
-                    margin: const EdgeInsets.only(right: 3.0),
-                  ),
-                  Flexible(
-                      child: SubstringHighlight(
-                    text: questionObj.options[3],
-                    term: _searchController.text,
-                    textStyle: TextStyle(
-                        // non-highlight style
-                        color: Colors.black,
-                        fontSize: 16),
-                    textStyleHighlight: TextStyle(
-                      // highlight style
-                      color: Colors.black,
-                      backgroundColor: Colors.yellow,
-                    ),
-                  )),
-                  if (questionObj.answers[3])
-                    Icon(Icons.check_circle_outline_rounded,
-                        color: Colors.green),
-                ]),
-              ],
+        key: ValueKey(questionObj.question),
+        padding: EdgeInsets.symmetric(vertical: 19, horizontal: 1),
+        child: Dismissible(
+            key: Key(questionObj.id.toString()),
+            background: Container(
+              color: Colors.purple,
+              child: Padding(
+                padding: const EdgeInsets.all(15),
+                child: Icon(Icons.delete, color: Colors.white),
+              ),
             ),
-            trailing: IconButton(
-                icon: Icon(Icons.delete, color: Colors.red),
-                onPressed: () {
-                  _showDeleteAlertDialogBox(context, questionObj);
-                }),
-            onTap: () {
-              setUpdateUI(questionObj);
-            },
-          ),
-        ),
-      ),
-        onDismissed: (direction) {//Delete the the question on a flick for either side
-          if (direction == DismissDirection.endToStart) {
-            controller.deleteQuestion(questionObj);
-            _showDeleteItemToastMessage();
-          } else {
-            controller.deleteQuestion(questionObj);
-            _showDeleteItemToastMessage();
-          }
-        }));
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.blue),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: SingleChildScrollView(
+                child: ListTile(
+                  title: Column(
+                    children: <Widget>[
+                      Row(children: <Widget>[
+                        Container(
+                          child: Text(formattedQuestionNumberText,
+                              style: TextStyle(color: Colors.white)),
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5)),
+                              color: Colors.purple),
+                          padding: EdgeInsets.all(3.0),
+                          margin: const EdgeInsets.only(right: 5.0),
+                        ),
+                        Flexible(
+                            child: SubstringHighlight(
+                          text: questionObj.question,
+                          term: _searchController.text,
+                          textStyle: TextStyle(
+                              // non-highlight style
+                              color: Colors.black,
+                              fontSize: 16),
+                          textStyleHighlight: TextStyle(
+                            // highlight style
+                            color: Colors.black,
+                            backgroundColor: Colors.yellow,
+                          ),
+                        )),
+                      ]),
+                      Divider(),
+                      Row(children: <Widget>[
+                        Container(
+                          child: Icon(Icons.question_answer_rounded,
+                              color: Colors.orange),
+                          margin: const EdgeInsets.only(right: 3.0),
+                        ),
+                        Flexible(
+                            child: SubstringHighlight(
+                          text: questionObj.options[0],
+                          term: _searchController.text,
+                          textStyle: TextStyle(
+                              // non-highlight style
+                              color: Colors.black,
+                              fontSize: 16),
+                          textStyleHighlight: TextStyle(
+                            // highlight style
+                            color: Colors.black,
+                            backgroundColor: Colors.yellow,
+                          ),
+                        )),
+                        if (questionObj.answers[0])
+                          Icon(Icons.check_circle_outline_rounded,
+                              color: Colors.green),
+                      ]),
+                      Row(children: <Widget>[
+                        Container(
+                          child: Icon(Icons.question_answer_rounded,
+                              color: Colors.orange),
+                          margin: const EdgeInsets.only(right: 3.0),
+                        ),
+                        Flexible(
+                            child: SubstringHighlight(
+                          text: questionObj.options[1],
+                          term: _searchController.text,
+                          textStyle: TextStyle(
+                              // non-highlight style
+                              color: Colors.black,
+                              fontSize: 16),
+                          textStyleHighlight: TextStyle(
+                            // highlight style
+                            color: Colors.black,
+                            backgroundColor: Colors.yellow,
+                          ),
+                        )),
+                        if (questionObj.answers[1])
+                          Icon(Icons.check_circle_outline_rounded,
+                              color: Colors.green),
+                      ]),
+                      Row(children: <Widget>[
+                        Container(
+                          child: Icon(Icons.question_answer_rounded,
+                              color: Colors.orange),
+                          margin: const EdgeInsets.only(right: 3.0),
+                        ),
+                        Flexible(
+                            child: SubstringHighlight(
+                          text: questionObj.options[2],
+                          term: _searchController.text,
+                          textStyle: TextStyle(
+                              // non-highlight style
+                              color: Colors.black,
+                              fontSize: 16),
+                          textStyleHighlight: TextStyle(
+                            // highlight style
+                            color: Colors.black,
+                            backgroundColor: Colors.yellow,
+                          ),
+                        )),
+                        if (questionObj.answers[2])
+                          Icon(Icons.check_circle_outline_rounded,
+                              color: Colors.green),
+                      ]),
+                      Row(children: <Widget>[
+                        Container(
+                          child: Icon(Icons.question_answer_rounded,
+                              color: Colors.orange),
+                          margin: const EdgeInsets.only(right: 3.0),
+                        ),
+                        Flexible(
+                            child: SubstringHighlight(
+                          text: questionObj.options[3],
+                          term: _searchController.text,
+                          textStyle: TextStyle(
+                              // non-highlight style
+                              color: Colors.black,
+                              fontSize: 16),
+                          textStyleHighlight: TextStyle(
+                            // highlight style
+                            color: Colors.black,
+                            backgroundColor: Colors.yellow,
+                          ),
+                        )),
+                        if (questionObj.answers[3])
+                          Icon(Icons.check_circle_outline_rounded,
+                              color: Colors.green),
+                      ]),
+                    ],
+                  ),
+                  trailing: IconButton(
+                      icon: Icon(Icons.delete, color: Colors.red),
+                      onPressed: () {
+                        _showDeleteAlertDialogBox(context, questionObj);
+                      }),
+                  onTap: () {
+                    setUpdateUI(questionObj);
+                  },
+                ),
+              ),
+            ),
+            onDismissed: (direction) {
+              //Delete the the question on a flick for either side
+              if (direction == DismissDirection.endToStart) {
+                controller.deleteQuestion(questionObj);
+                _showDeleteItemToastMessage();
+              } else {
+                controller.deleteQuestion(questionObj);
+                _showDeleteItemToastMessage();
+              }
+            }));
   }
 
 //Build Widget
@@ -759,10 +820,24 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => {viewAddUpdateDialogBox(context)},
+      floatingActionButton: SpeedDial(
         backgroundColor: Colors.purple,
-        child: Icon(Icons.add),
+        closeManually: true,
+        child: Icon(Icons.sort),
+        children: [
+          SpeedDialChild(
+            //Add new Question floating action button
+            child: Icon(Icons.add),
+            backgroundColor: Colors.purple,
+            onTap: () => {viewAddUpdateDialogBox(context)},
+          ),
+          SpeedDialChild(
+            //Delete All Questions floating action button
+            child: Icon(Icons.delete),
+            backgroundColor: Colors.red,
+            onTap: () => {_showDeleteAllAlertDialogBox(context)},
+          )
+        ],
       ),
     );
   }

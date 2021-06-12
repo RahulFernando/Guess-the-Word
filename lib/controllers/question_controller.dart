@@ -6,13 +6,14 @@ class QuestionController {
 
   // get all quesions
   Stream<List<Question>> getQuesions() {
-    return _db.collection('questions').snapshots().map((snapshot) => snapshot
-        .docs
-        .map((doc) => Question.fromJson(doc.data(), doc.reference))
-        .toList());
+    return _db.collection('questions').snapshots().map((snapshot) =>
+        snapshot
+            .docs
+            .map((doc) => Question.fromJson(doc.data(), doc.reference))
+            .toList());
   }
 
-    getAllQuestions(){ 
+  getAllQuestions() {
     return _db.collection('questions').snapshots();
   }
 
@@ -20,15 +21,13 @@ class QuestionController {
   Future<Question> getQuestion(String id) {
     return _db.collection('questions').document(id).get().then((value) {
       return Question.fromJson(value.data(), value.reference);
-    });  
+    });
   }
 
 //add question , options and correct answers
   addQuestion(Question questionObj) async {
     try {
-
       _db.runTransaction((Transaction transaction) async {
-
         await _db.collection('questions').doc().set(questionObj.toMap());
       });
     } catch (e) {
@@ -56,6 +55,15 @@ class QuestionController {
   deleteQuestion(Question question) {
     _db.runTransaction((Transaction transaction) async {
       await transaction.delete(question.id);
+    });
+  }
+
+  ///Deletes All the questions
+  deleteAllQuestions(List<Question> questionsList) {
+    _db.runTransaction((Transaction transaction) async {
+      await questionsList.forEach((question) {
+        transaction.delete(question.id);
+      });
     });
   }
 }
