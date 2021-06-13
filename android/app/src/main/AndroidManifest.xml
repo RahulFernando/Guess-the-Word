@@ -9,6 +9,7 @@
         android:name="io.flutter.app.FlutterApplication"
         android:label="guess_app"
         android:icon="@mipmap/ic_launcher">
+        android:allowBackup="false"
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
