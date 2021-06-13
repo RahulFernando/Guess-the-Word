@@ -14,7 +14,7 @@ class _QuizAdminWelcomeSplashScreen extends State<QuizAdminWelcomeSplashScreen> 
   void initState() {
     // TODO: implement initState
     super.initState();
-    Timer(const Duration(milliseconds: 4000), () {
+    Timer(const Duration(milliseconds: 2000), () {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => QuizAdminDemo()));
     });
