@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:guess_app/screens/login.dart';
-import 'package:guess_app/screens/register.dart';
 import 'package:guess_app/utils/color.dart';
 import 'package:guess_app/widgets/header_container.dart';
 
