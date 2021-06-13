@@ -1,9 +1,12 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:guess_app/widgets/main_drawer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:substring_highlight/substring_highlight.dart';
 
 import '../controllers/question_controller.dart';
@@ -29,6 +32,9 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
 
   //Stores the filtered questions based on the search criteria
   List<QueryDocumentSnapshot> _searchResultsList = [];
+
+  //To notify when a revert has been made for a first time deletion
+  bool _isRevertDeletion = false;
 
 //Initialize Text Fields
   TextEditingController questionController = TextEditingController();
@@ -188,7 +194,7 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
         textColor: Colors.red);
   }
 
-//Displays a toast message after performing a successful delete all
+  ///Displays a toast message after performing a successful delete all
   _showDeleteAllToastMessage() {
     Fluttertoast.showToast(
         msg: 'All the Questions have been deleted !',
@@ -604,6 +610,7 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
 //Load list and convert to a list view
   Widget buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
     int _currentQuestionNumber = 0;
+
     return ListView(
         children: snapshot
             .map((data) =>
@@ -622,7 +629,8 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
         key: ValueKey(questionObj.question),
         padding: EdgeInsets.symmetric(vertical: 19, horizontal: 1),
         child: Dismissible(
-            key: Key(questionObj.id.toString()),
+            key: new Key(
+                questionObj.id.toString() + Random().nextInt(10000).toString()),
             background: Container(
               color: Colors.purple,
               child: Padding(
@@ -775,16 +783,116 @@ class _QuizAdminDemoState extends State<QuizAdminDemo> {
                 ),
               ),
             ),
-            onDismissed: (direction) {
-              //Delete the the question on a flick for either side
-              if (direction == DismissDirection.endToStart) {
-                controller.deleteQuestion(questionObj);
-                _showDeleteItemToastMessage();
-              } else {
-                controller.deleteQuestion(questionObj);
-                _showDeleteItemToastMessage();
-              }
+            onDismissed: (DismissDirection direction) {
+              var value = _isFirstTimeQuickDelete();
+              value.then((result) =>
+                  {_performQuickDeletion(direction, result, questionObj)});
             }));
+  }
+
+  ///Performs the quick deletion
+  _performQuickDeletion(
+    DismissDirection direction,
+    bool isFirstTime,
+    Question question,
+  ) {
+    if (direction == DismissDirection.endToStart) {
+      if (isFirstTime) {
+        _showFirstTimeQuickDeleteAlert(context, question);
+      } else {
+        controller.deleteQuestion(question);
+        _showDeleteItemToastMessage();
+      }
+    } else {
+      if (isFirstTime) {
+        _showFirstTimeQuickDeleteAlert(context, question);
+      } else {
+        controller.deleteQuestion(question);
+        _showDeleteItemToastMessage();
+      }
+    }
+  }
+
+  ///Checks whether the user is attempting to use the quick deletion for the first time
+  Future<bool> _isFirstTimeQuickDelete() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool currentValue = prefs.getBool('isDisplayedDeleteNotification');
+
+    if (currentValue == null || !currentValue) {
+      await prefs.setBool('isDisplayedDeleteNotification', true);
+      return true;
+    }
+
+    return false;
+  }
+
+  ///Loads the quick delete operation confirmation alert in the first attempt
+  _showFirstTimeQuickDeleteAlert(BuildContext context, Question questionObj) {
+    // set up the buttons
+    Widget undoButton = FlatButton(
+      child: Text("Undo"),
+      onPressed: () {
+        Navigator.of(context, rootNavigator: true).pop();
+        setState(() {
+          _isRevertDeletion = true;
+        });
+      },
+    );
+    Widget continueButton = FlatButton(
+      child: Text("Continue"),
+      onPressed: () {
+        _deleteQuestion(questionObj);
+        Navigator.of(context, rootNavigator: true).pop();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Alert"),
+      content: SingleChildScrollView(
+        child: ListBody(
+          children: <Widget>[
+            Text(
+              'A horizontal swipe of an item will perform a quick deletion of the item, Are you sure you want to continue?',
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Flexible(
+                    flex: 1,
+                    child: CupertinoButton(
+                      onPressed: () => {},
+                      color: Colors.amber,
+                      minSize: double.minPositive,
+                      padding: EdgeInsets.fromLTRB(2, 3, 2, 3),
+                      child:
+                          Icon(Icons.lightbulb, color: Colors.purple, size: 21),
+                    )),
+                Flexible(
+                  flex: 8,
+                  child: Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: Text(
+                          "This is only a one time alert message which appears to prevent any unnecessary deletions and won't appear in the future quick deletions",
+                          style: TextStyle(fontSize: 12, color: Colors.grey))),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        undoButton,
+        continueButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
 //Build Widget
